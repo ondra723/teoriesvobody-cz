@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Týdenní dotazník</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <section class="card">
+      <h1>Týdenní dotazník</h1>
+      <p class="muted">
+        Vyplň všech 14 otázek. Po odeslání se zobrazí souhrn, který si vyfoť.
+      </p>
+
+      <div class="meta-grid">
+        <label>
+          <span>Týden</span>
+          <select id="week">
+            <option value="1">Týden 1</option>
+            <option value="2">Týden 2</option>
+            <option value="3">Týden 3</option>
+            <option value="4">Týden 4</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Skupina</span>
+          <select id="slot">
+            <option value="10">10:00</option>
+            <option value="12">12:00</option>
+            <option value="14">14:00</option>
+          </select>
+        </label>
+      </div>
+
+      <form id="surveyForm">
+        <div id="questions"></div>
+
+        <div class="actions">
+          <button type="submit" class="primary">Odeslat</button>
+          <button type="button" id="clearBtn" class="secondary">Vymazat</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="resultCard" class="card hidden">
+      <h2>Výsledek k vyfocení</h2>
+      <div id="resultContent"></div>
+
+      <div class="actions">
+        <button type="button" id="saveShotBtn" class="primary">Hotovo</button>
+        <button type="button" id="downloadBtn" class="secondary">Stáhnout JSON</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
