@@ -183,6 +183,17 @@ function labelFromValue(value) {
   return found ? found.label : "Neznámá odpověď";
 }
 
+function extractScores(data) {
+  const nestedScores = data?.scores || {};
+
+  return {
+    w1: nestedScores.w1 ?? data?.["scores.w1"] ?? null,
+    w2: nestedScores.w2 ?? data?.["scores.w2"] ?? null,
+    w3: nestedScores.w3 ?? data?.["scores.w3"] ?? null,
+    w4: nestedScores.w4 ?? data?.["scores.w4"] ?? null,
+  };
+}
+
 async function loadRemoteScores(uid) {
   const ref = doc(db, "respondents", uid);
   const snap = await getDoc(ref);
@@ -193,32 +204,34 @@ async function loadRemoteScores(uid) {
     return;
   }
 
-  const data = snap.data();
-  currentScores = {
-    w1: data?.scores?.w1 ?? null,
-    w2: data?.scores?.w2 ?? null,
-    w3: data?.scores?.w3 ?? null,
-    w4: data?.scores?.w4 ?? null,
-  };
-
+  const data = snap.data() || {};
+  currentScores = extractScores(data);
   updateHistoryLine();
 }
 
 async function saveRemoteScores({ week, totalScore, previousScore }) {
   if (!currentUid) throw new Error("Chybí přihlášený uživatel.");
 
-  const payload = {
-    updatedAt: serverTimestamp(),
-    [`scores.w${week}`]: totalScore,
+  const nextScores = {
+    ...currentScores,
+    [`w${week}`]: totalScore,
   };
 
   const prevWeek = week - 1;
   if (prevWeek >= 1 && previousScore !== null) {
-    payload[`scores.w${prevWeek}`] = previousScore;
+    nextScores[`w${prevWeek}`] = previousScore;
   }
 
   const ref = doc(db, "respondents", currentUid);
-  await setDoc(ref, payload, { merge: true });
+
+  await setDoc(
+    ref,
+    {
+      scores: nextScores,
+      updatedAt: serverTimestamp(),
+    },
+    { merge: true }
+  );
 
   await loadRemoteScores(currentUid);
 }
