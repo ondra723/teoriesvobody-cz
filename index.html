@@ -35,6 +35,26 @@
         </label>
       </div>
 
+  <div class="question-card">
+    <div class="question-title">Práce se skóre</div>
+
+    <label>
+      <span>Score z minulého týdne (volitelné, pokud nebylo dříve uloženo)</span>
+      <input
+        id="previousScore"
+        type="number"
+        min="0"
+        max="70"
+        inputmode="numeric"
+        placeholder="Např. 48"
+      />
+    </label>
+
+    <p class="muted">Uložená skóre: <span id="historyLine">načítám…</span></p>
+    <p class="muted">Kód respondenta: <span id="respondentCode">načítám…</span></p>
+  </div>
+
+
       <form id="surveyForm">
         <div id="questions"></div>
 
@@ -56,6 +76,6 @@
     </section>
   </main>
 
-  <script src="app.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>
