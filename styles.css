@@ -72,6 +72,15 @@ select {
   font-size: 16px;
 }
 
+input[type="number"] {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: white;
+  font-size: 16px;
+}
+
 .question-card {
   border: 1px solid var(--line);
   border-radius: 16px;
