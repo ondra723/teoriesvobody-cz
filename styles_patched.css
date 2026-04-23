@@ -47,9 +47,20 @@ h1, h2, h3 {
 
 .meta-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
   gap: 12px;
   margin: 16px 0 20px;
+}
+
+.meta-grid-3 {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.meta-grid-2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+.compact-top {
+  margin-top: -4px;
 }
 
 .meta-grid label,
@@ -63,16 +74,9 @@ label span {
   margin-bottom: 6px;
 }
 
-select {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: white;
-  font-size: 16px;
-}
-
-input[type="number"] {
+select,
+input[type="number"],
+input[type="text"] {
   width: 100%;
   padding: 12px;
   border: 1px solid var(--line);
@@ -86,6 +90,10 @@ input[type="number"] {
   border-radius: 16px;
   padding: 14px;
   margin-bottom: 14px;
+}
+
+.summary-card {
+  background: #fbfcff;
 }
 
 .question-title {
@@ -111,6 +119,20 @@ input[type="number"] {
 
 .option input {
   transform: scale(1.2);
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 14px;
+  margin-top: 10px;
+}
+
+.result-chip {
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #f3f6fb;
+  border: 1px solid var(--line);
 }
 
 .actions {
@@ -168,8 +190,10 @@ button.secondary {
   margin-top: 10px;
 }
 
-@media (max-width: 640px) {
-  .meta-grid {
+@media (max-width: 760px) {
+  .meta-grid-3,
+  .meta-grid-2,
+  .result-grid {
     grid-template-columns: 1fr;
   }
 
