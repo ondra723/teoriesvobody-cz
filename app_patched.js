@@ -63,7 +63,7 @@ const DIMENSION_GROUPS = {
   coordination: [8, 9, 10, 11, 12, 13],
 };
 
-const STORAGE_KEY = "teamfuture_survey_draft_v3";
+const STORAGE_KEY = "teamfuture_survey_draft_v2";
 
 const form = document.getElementById("surveyForm");
 const questionsWrap = document.getElementById("questions");
