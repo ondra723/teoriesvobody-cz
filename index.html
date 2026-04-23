@@ -4,17 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Týdenní dotazník</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles_patched.css" />
 </head>
 <body>
   <main class="container">
     <section class="card">
       <h1>Týdenní dotazník</h1>
       <p class="muted">
-        Vyplň všech 14 otázek. Po odeslání se zobrazí souhrn, který si vyfoť.
+        Hlavní skóre vychází ze 14 otázek. Dole jsou ještě 3 doplňující konkrétnější otázky,
+        které se ukládají zvlášť a hlavní skóre nemění.
       </p>
 
-      <div class="meta-grid">
+      <div class="meta-grid meta-grid-3">
         <label>
           <span>Týden</span>
           <select id="week">
@@ -26,37 +27,63 @@
         </label>
 
         <label>
-          <span>Skupina</span>
+          <span>Čas cvičení</span>
           <select id="slot">
             <option value="10">10:00</option>
             <option value="12">12:00</option>
             <option value="14">14:00</option>
           </select>
         </label>
+
+        <label>
+          <span>ID týmu</span>
+          <input
+            id="teamId"
+            type="text"
+            maxlength="24"
+            placeholder="Např. TYM-03 nebo ALFA"
+            autocomplete="off"
+          />
+        </label>
       </div>
 
-  <div class="question-card">
-    <div class="question-title">Práce se skóre</div>
+      <div class="meta-grid meta-grid-2 compact-top">
+        <label>
+          <span>Pohlaví</span>
+          <select id="gender">
+            <option value="">Nechci uvést</option>
+            <option value="muž">Muž</option>
+            <option value="žena">Žena</option>
+            <option value="jiné">Jiné</option>
+          </select>
+        </label>
 
-    <label>
-      <span>Score z minulého týdne (volitelné, pokud nebylo dříve uloženo)</span>
-      <input
-        id="previousScore"
-        type="number"
-        min="0"
-        max="70"
-        inputmode="numeric"
-        placeholder="Např. 48"
-      />
-    </label>
+        <label>
+          <span>Score z minulého týdne (volitelné, pokud nebylo dříve uloženo)</span>
+          <input
+            id="previousScore"
+            type="number"
+            min="0"
+            max="70"
+            inputmode="numeric"
+            placeholder="Např. 48"
+          />
+        </label>
+      </div>
 
-    <p class="muted">Uložená skóre: <span id="historyLine">načítám…</span></p>
-    <p class="muted">Kód respondenta: <span id="respondentCode">načítám…</span></p>
-  </div>
-
+      <div class="question-card summary-card">
+        <div class="question-title">Práce se skóre</div>
+        <p class="muted">Uložená hlavní skóre: <span id="historyLine">načítám…</span></p>
+        <p class="muted">Kód respondenta: <span id="respondentCode">načítám…</span></p>
+      </div>
 
       <form id="surveyForm">
+        <h2>Hlavní skóre (14 otázek)</h2>
         <div id="questions"></div>
+
+        <h2>Doplňující konkrétnější otázky</h2>
+        <p class="muted">Tyto 3 otázky se ukládají zvlášť a nezapočítávají se do hlavního skóre.</p>
+        <div id="extraQuestions"></div>
 
         <div class="actions">
           <button type="submit" class="primary">Odeslat</button>
@@ -76,6 +103,6 @@
     </section>
   </main>
 
-  <script type="module" src="app.js"></script>
+  <script type="module" src="app_patched.js"></script>
 </body>
 </html>
