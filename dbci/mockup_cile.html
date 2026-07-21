@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dBCI — výběr cíle (mockup)</title>
+<style>
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { margin:0; background:#e8ecf3; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; padding:16px; }
+  .phone { max-width:380px; margin:0 auto; background:#f5f7fb; border-radius:22px; padding:12px; border:1px solid #dbe2ea; min-height:600px; }
+  .top { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .t { font-size:15px; font-weight:500; color:#1f2937; }
+  .cnt { font-size:11px; color:#6b7280; }
+  .cnt b { color:#2563eb; }
+  .x { color:#9ca3af; cursor:pointer; }
+  .card { background:#fff; border:1px solid #dbe2ea; border-radius:12px; padding:11px 12px; margin-bottom:10px; }
+  .lbl { font-size:11px; color:#6b7280; margin-bottom:8px; }
+  .gs { display:flex; gap:4px; overflow-x:auto; padding-bottom:2px; }
+  .g { flex-shrink:0; padding:6px 11px; border-radius:14px; border:1px solid #dbe2ea; background:#fff; font-size:12px; color:#374151; cursor:pointer; }
+  .g.on { background:#2563eb; color:#fff; border-color:#2563eb; }
+  .need { font-size:11px; color:#9ca3af; margin-top:8px; }
+  .need b { color:#374151; }
+  .day { display:flex; align-items:center; justify-content:space-between; padding:0 4px 8px; }
+  .dl { font-size:12px; font-weight:500; color:#374151; }
+  .nav { display:flex; gap:11px; color:#9ca3af; font-size:14px; }
+  .nav span { cursor:pointer; }
+  .row { display:flex; align-items:center; gap:9px; background:#fff; border:1px solid #dbe2ea; border-radius:11px; padding:10px 11px; margin-bottom:6px; }
+  .row.sel { border-color:#2563eb; }
+  .nm { font-size:13px; color:#1f2937; }
+  .sb { font-size:11px; color:#9ca3af; }
+  .oc { font-size:12px; font-variant-numeric:tabular-nums; }
+  .tg { width:29px; height:29px; border-radius:8px; border:1px solid #dbe2ea; background:#fff; color:#cbd5e1; font-size:13px; cursor:pointer; flex:0 0 29px; }
+  .tg.on { background:#2563eb; border-color:#2563eb; color:#fff; }
+  .tg.lock { border:none; background:transparent; color:#e5e7eb; cursor:not-allowed; }
+  .note { font-size:11px; color:#9ca3af; text-align:center; margin-top:10px; line-height:1.5; }
+  .goals { background:#eef4ff; border:1px solid #cfe0fb; border-radius:11px; padding:10px 12px; margin-bottom:10px; }
+  .gr { display:flex; justify-content:space-between; align-items:center; font-size:12px; padding:3px 0; }
+  .gr .n { color:#1f2937; }
+  .gr .p { color:#6b7280; font-size:11px; }
+  .rm { color:#cbd5e1; cursor:pointer; }
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <div class="top">
+    <span class="t">Výběr cílů</span>
+    <span class="cnt">cíle: <b id="cn">1</b>/3</span>
+  </div>
+
+  <div class="goals" id="goals"></div>
+
+  <div class="card">
+    <div class="lbl">ČASOVÁ BUŇKA</div>
+    <div class="gs" id="gs"></div>
+    <div class="need" id="need"></div>
+  </div>
+
+  <div class="day">
+    <span class="dl">Pondělí 13. 7.</span>
+    <div class="nav"><span>‹</span><span>›</span></div>
+  </div>
+
+  <div id="log"></div>
+
+  <div class="note">šedě = výskyty téže aktivity v této buňce napříč celým logem<br>🔒 = pro tuhle jemnost nemáš dost opakování</div>
+
+</div>
+
+<script>
+var grans=[['6h',5],['2h',8],['1h',12],['30m',20],['10m',30],['5m',40]];
+var gi=1;
+
+var acts=[
+  ['Čištění zubů','hygiena','22:04–22:11',{'6h':47,'2h':38,'1h':31,'30m':24,'10m':9,'5m':4}],
+  ['Četba','rozvoj','21:30–22:04',{'6h':52,'2h':29,'1h':19,'30m':11,'10m':3,'5m':1}],
+  ['Maily','work - admin','20:40–21:28',{'6h':61,'2h':34,'1h':24,'30m':13,'10m':5,'5m':2}],
+  ['Večeře','jídlo','19:50–20:35',{'6h':58,'2h':41,'1h':26,'30m':18,'10m':7,'5m':3}],
+  ['Odpolední práce','work - projekt','18:05–19:40',{'6h':44,'2h':17,'1h':7,'30m':4,'10m':1,'5m':0}]
+];
+
+var goals=[{n:'Čištění zubů',w:'22:00–22:30',g:'30m'}];
+
+function drawG(){
+  document.getElementById('gs').innerHTML = grans.map(function(x,i){
+    return '<button class="g'+(i===gi?' on':'')+'" onclick="setG('+i+')">'+x[0]+'</button>';
+  }).join('');
+  document.getElementById('need').innerHTML = 'Pro buňku <b>'+grans[gi][0]+'</b> potřebuješ min. <b>'+grans[gi][1]+'</b> výskytů';
+}
+function setG(i){ gi=i; drawG(); drawLog(); }
+
+function drawGoals(){
+  var h='<div style="font-size:11px;color:#2563eb;margin-bottom:6px;">AKTIVNÍ CÍLE</div>';
+  if(!goals.length) h+='<div style="font-size:12px;color:#9ca3af;">zatím žádný — vyber terčíkem níž</div>';
+  goals.forEach(function(g,i){
+    h+='<div class="gr"><div><span class="n">'+g.n+'</span><div class="p">'+g.w+' · buňka '+g.g+'</div></div>'
+      +'<span class="rm" onclick="rm('+i+')">✕</span></div>';
+  });
+  document.getElementById('goals').innerHTML=h;
+  document.getElementById('cn').textContent=goals.length;
+}
+function rm(i){ goals.splice(i,1); drawGoals(); drawLog(); }
+
+function drawLog(){
+  var need=grans[gi][1], key=grans[gi][0], h='';
+  acts.forEach(function(a,i){
+    var oc=a[3][key], ok=oc>=need, sel=goals.some(function(g){return g.n===a[0];});
+    h+='<div class="row'+(sel?' sel':'')+'">'
+      +'<div style="flex:1;min-width:0;"><div class="nm">'+a[0]+'</div><div class="sb">'+a[2]+' · '+a[1]+'</div></div>'
+      +'<span class="oc" style="color:'+(ok?'#9ca3af':'#e5e7eb')+';">'+oc+'×</span>'
+      + (ok ? '<button class="tg'+(sel?' on':'')+'" onclick="pick('+i+')">◎</button>'
+            : '<button class="tg lock" title="málo výskytů">🔒</button>')
+      +'</div>';
+  });
+  document.getElementById('log').innerHTML=h;
+}
+function pick(i){
+  var a=acts[i], key=grans[gi][0];
+  var ix=goals.findIndex(function(g){return g.n===a[0];});
+  if(ix>=0){ goals.splice(ix,1); }
+  else if(goals.length<3){
+    goals.push({n:a[0], w:a[2].split('–')[0].slice(0,2)+':00–'+a[2].split('–')[0].slice(0,2)+':'+(key==='30m'?'30':'59'), g:key});
+  } else { alert('max 3 cíle — nejdřív jeden odeber'); return; }
+  drawGoals(); drawLog();
+}
+
+drawG(); drawGoals(); drawLog();
+</script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dBCI — vstup aktivity (mockup)</title>
+<style>
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { margin:0; background:#e8ecf3; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; padding:16px; }
+  .phone { max-width:380px; margin:0 auto; background:#f5f7fb; border-radius:22px; padding:12px; border:1px solid #dbe2ea; }
+  .hd { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .hd .t { font-size:15px; font-weight:500; color:#1f2937; }
+  .seg { display:flex; background:#eef2f7; border-radius:20px; padding:3px; }
+  .seg button { padding:5px 12px; border-radius:16px; border:none; background:transparent; font-size:12px; color:#374151; cursor:pointer; }
+  .seg button.on { background:#2563eb; color:#fff; }
+  .steps { font-size:11px; color:#9ca3af; margin-bottom:10px; }
+  .card { background:#fff; border:1px solid #dbe2ea; border-radius:14px; padding:14px; }
+  input { width:100%; border:1px solid #dbe2ea; border-radius:10px; padding:11px; font-size:15px; margin-bottom:8px; }
+  .btn { width:100%; background:#2563eb; color:#fff; border:none; border-radius:12px; padding:13px; font-size:16px; font-weight:500; cursor:pointer; }
+  .row2 { display:flex; gap:8px; align-items:center; }
+  .mini { padding:12px 14px; background:#eef2f7; color:#374151; border:none; border-radius:10px; font-size:13px; cursor:pointer; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .win { text-align:left; background:#fff; border:1px solid #dbe2ea; border-radius:12px; padding:13px; cursor:pointer; }
+  .win.now { border-color:#2563eb; background:#eef4ff; }
+  .win .n { font-size:14px; font-weight:500; color:#1f2937; }
+  .win .h { font-size:11px; color:#9ca3af; }
+  .sec { font-size:11px; color:#9ca3af; margin:14px 0 7px; }
+  .act { display:flex; align-items:center; justify-content:space-between; width:100%; background:#fff; border:1px solid #dbe2ea; border-radius:12px; padding:11px 13px; margin-bottom:6px; cursor:pointer; }
+  .act .n { font-size:14px; color:#1f2937; text-align:left; }
+  .act .s { font-size:11px; color:#9ca3af; text-align:left; }
+  .badge { font-size:10px; color:#2563eb; background:#eef4ff; padding:2px 7px; border-radius:6px; }
+  .cnt { font-size:11px; color:#cbd5e1; }
+  .back { background:none; border:none; color:#6b7280; font-size:13px; padding:4px 0 10px; cursor:pointer; }
+  .tag { font-size:10px; padding:2px 8px; border-radius:7px; }
+  .note { font-size:11px; color:#9ca3af; text-align:center; margin-top:10px; }
+  .dd { border:1px solid #dbe2ea; border-radius:10px; background:#fff; margin:-4px 0 8px; overflow:hidden; }
+  .dd div { padding:9px 11px; font-size:13px; color:#374151; border-bottom:1px solid #f1f5f9; cursor:pointer; }
+  .dd div:last-child { border-bottom:none; }
+  .dd .tg { font-size:10px; color:#9ca3af; margin-left:6px; }
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="hd">
+    <span class="t">Nová aktivita</span>
+    <div class="seg">
+      <button id="bType">psát</button>
+      <button id="bTap" class="on">tapat</button>
+    </div>
+  </div>
+  <div class="steps" id="steps"></div>
+  <div id="pane"></div>
+</div>
+
+<script>
+var windows=[['Ráno','4:00–7:59'],['Dopoledne','8:00–11:59'],['Poledne','12:00–13:59'],
+             ['Odpoledne','14:00–17:59'],['Večer','18:00–21:59'],['Noc','22:00–3:59']];
+var nowWin='Dopoledne';
+
+var acts={
+  'Ráno':[['Sprcha','rutina',20],['Snídaně','jídlo',19],['Přesun Škola z Domov','commuting',9]],
+  'Dopoledne':[['Přesun Škola z Domov','commuting',18],['work - 5. hit','work - VVČ - článek',12],['Přednáška','work - výuka',7],['Káva s kolegou','vztahy',3]],
+  'Poledne':[['Oběd','jídlo',22],['Procházka','pohyb',5]],
+  'Odpoledne':[['Vývoj aplikace','work - projekt',15],['Maily','work - admin',11]],
+  'Večer':[['Večeře','jídlo',17],['Četba','rozvoj',8],['Socializace','vztahy',6]],
+  'Noc':[['Příprava na spánek','rutina',14],['Čištění zubů','hygiena',31]]
+};
+var tagCats={
+  'work':[['work - 5. hit','work - VVČ - článek',12],['Vývoj aplikace','work - projekt',15],['Maily','work - admin',11],['Přednáška','work - výuka',7]],
+  'jídlo':[['Oběd','jídlo',22],['Večeře','jídlo',17],['Snídaně','jídlo',19]],
+  'commuting':[['Přesun Škola z Domov','commuting',18]],
+  'rutina':[['Sprcha','rutina',20],['Příprava na spánek','rutina',14]],
+  'pohyb':[['Procházka','pohyb',5]],
+  'hygiena':[['Čištění zubů','hygiena',31]]
+};
+var tagColor={'work':'#fde68a','jídlo':'#bbf7d0','commuting':'#bfdbfe','rutina':'#e9d5ff','pohyb':'#bbf7d0','hygiena':'#fecaca','vztahy':'#fbcfe8','rozvoj':'#ddd6fe'};
+function tcol(t){ var p=(t||'').split(' - ')[0]; return tagColor[p]||'#eef2f7'; }
+
+var pane=document.getElementById('pane'), steps=document.getElementById('steps');
+
+function renderWindows(){
+  steps.innerHTML='<b style="color:#2563eb;">1. Kdy?</b> → 2. Co? → 3. Uprav a spusť';
+  var h='<div class="grid">';
+  windows.forEach(function(w){
+    h+='<button class="win '+(w[0]===nowWin?'now':'')+'" data-w="'+w[0]+'"><div class="n">'+w[0]+'</div><div class="h">'+w[1]+(w[0]===nowWin?' · teď':'')+'</div></button>';
+  });
+  h+='</div>';
+  h+='<div class="sec">NEBO PODLE TAGU</div><div class="grid">';
+  Object.keys(tagCats).forEach(function(k){
+    h+='<button class="tg" data-k="'+k+'" style="text-align:left;background:'+tcol(k)+';border:none;border-radius:12px;padding:11px;cursor:pointer;"><div class="n" style="font-size:13px;font-weight:500;color:#374151;">'+k+'</div><div class="h" style="color:#6b7280;">'+tagCats[k].length+' aktivit</div></button>';
+  });
+  h+='</div>';
+  pane.innerHTML=h;
+  pane.querySelectorAll('.win').forEach(function(b){b.onclick=function(){renderActs(b.dataset.w,acts[b.dataset.w]);};});
+  pane.querySelectorAll('.tg').forEach(function(b){b.onclick=function(){renderActs(b.dataset.k,tagCats[b.dataset.k]);};});
+}
+
+function renderActs(label,list){
+  steps.innerHTML='1. '+label+' → <b style="color:#2563eb;">2. Co?</b> → 3. Uprav a spusť';
+  var s=list.slice().sort(function(a,b){return b[2]-a[2];});
+  var h='<button class="back" id="back">‹ zpět</button>';
+  s.forEach(function(a,i){
+    h+='<button class="act" data-n="'+a[0]+'" data-t="'+a[1]+'"><div><div class="n">'+a[0]+'</div><div class="s">'+a[1]+'</div></div>'
+      + (i===0?'<span class="badge">nejčastější</span>':'<span class="cnt">'+a[2]+'×</span>')+'</button>';
+  });
+  h+='<div class="note">řazeno podle četnosti · ✎ upravit dlaždice</div>';
+  pane.innerHTML=h;
+  document.getElementById('back').onclick=renderWindows;
+  pane.querySelectorAll('.act').forEach(function(b){b.onclick=function(){renderFields(b.dataset.n,b.dataset.t,label);};});
+}
+
+function renderFields(n,t,label){
+  steps.innerHTML='1. '+label+' → 2. '+n+' → <b style="color:#2563eb;">3. Uprav a spusť</b>';
+  pane.innerHTML='<button class="back" id="back2">‹ zpět na výběr</button>'
+    +'<div class="card" style="border-color:#2563eb;">'
+      +'<div class="note" style="text-align:left;margin:0 0 8px;">předvyplněno tapnutím — uprav cokoli, nebo nech být</div>'
+      +'<input value="'+n+'"><input value="'+t+'">'
+      +'<button class="btn">▶ Start</button>'
+    +'</div>'
+    +'<div class="note">stejná dvě pole jako při psaní — tapání jen ušetřilo klávesnici</div>';
+  document.getElementById('back2').onclick=function(){renderActs(label,acts[label]||tagCats[label]);};
+}
+
+function renderType(){
+  steps.innerHTML='';
+  pane.innerHTML='<div class="card">'
+    +'<input id="d" placeholder="Popis aktivity (napiš pár znaků…)" autocomplete="off">'
+    +'<div id="dd"></div>'
+    +'<input id="tg" placeholder="Tag / kategorie">'
+    +'<div class="row2" style="margin-top:2px;">'
+      +'<button class="btn" style="flex:1;">▶ Start</button>'
+      +'<button class="mini">Now</button><button class="mini">Last</button>'
+    +'</div>'
+  +'</div>'
+  +'<div class="note">napiš 3 znaky (zkus „pře" nebo „ob") → našeptá se popis i poslední tag</div>';
+
+  var all=[];
+  Object.keys(acts).forEach(function(k){acts[k].forEach(function(a){ if(!all.some(function(x){return x[0]===a[0];})) all.push(a); });});
+
+  document.getElementById('d').oninput=function(){
+    var v=this.value.toLowerCase(), dd=document.getElementById('dd');
+    if(v.length<3){dd.innerHTML='';return;}
+    var m=all.filter(function(a){return a[0].toLowerCase().indexOf(v)===0;});
+    if(!m.length){dd.innerHTML='';return;}
+    var h='<div class="dd">';
+    m.forEach(function(a){h+='<div data-n="'+a[0]+'" data-t="'+a[1]+'">'+a[0]+'<span class="tg">'+a[1]+'</span></div>';});
+    dd.innerHTML=h+'</div>';
+    dd.querySelectorAll('div[data-n]').forEach(function(b){
+      b.onclick=function(){
+        document.getElementById('d').value=b.dataset.n;
+        document.getElementById('tg').value=b.dataset.t;
+        dd.innerHTML='';
+      };
+    });
+  };
+}
+
+document.getElementById('bTap').onclick=function(){
+  this.classList.add('on'); document.getElementById('bType').classList.remove('on'); renderWindows();
+};
+document.getElementById('bType').onclick=function(){
+  this.classList.add('on'); document.getElementById('bTap').classList.remove('on'); renderType();
+};
+renderWindows();
+</script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dBCI — konfrontace (mockup)</title>
+<style>
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { margin:0; background:#e8ecf3; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; padding:16px; }
+  .phone { max-width:380px; margin:0 auto; background:#f5f7fb; border-radius:22px; padding:12px; border:1px solid #dbe2ea; }
+  .top { display:flex; align-items:center; justify-content:space-between; margin-bottom:4px; }
+  .t { font-size:16px; font-weight:500; color:#1f2937; }
+  .x { color:#9ca3af; cursor:pointer; }
+  .wk { font-size:12px; color:#9ca3af; margin-bottom:14px; }
+  .card { background:#fff; border:1px solid #dbe2ea; border-radius:14px; padding:14px; margin-bottom:10px; }
+  .lbl { font-size:11px; color:#9ca3af; letter-spacing:.03em; margin-bottom:11px; }
+  .pair { display:flex; align-items:stretch; gap:9px; }
+  .box { flex:1; background:#f5f7fb; border-radius:10px; padding:11px; }
+  .box.me { background:#eef4ff; border:1px solid #cfe0fb; }
+  .bl { font-size:10px; color:#6b7280; margin-bottom:3px; }
+  .bv { font-size:15px; font-weight:500; color:#1f2937; }
+  .bs { font-size:10px; color:#9ca3af; }
+  .ar { align-self:center; color:#cbd5e1; font-size:14px; }
+  .ctx { border-top:1px solid #f1f5f9; margin-top:11px; padding-top:9px; }
+  .ctxl { font-size:10px; color:#cbd5e1; margin-bottom:5px; }
+  .ctxr { display:flex; gap:10px; font-size:11px; color:#6b7280; }
+  .quiet { font-size:11px; color:#cbd5e1; font-style:italic; margin-top:11px; }
+  .dlz { background:#fff; border:1px solid #2563eb; border-radius:14px; padding:14px; margin-bottom:10px; cursor:pointer; }
+  .btn { width:100%; background:#2563eb; color:#fff; border:none; border-radius:10px; padding:11px; font-size:14px; font-weight:500; cursor:pointer; margin-top:10px; }
+  .days { display:flex; gap:3px; align-items:flex-end; height:60px; margin:10px 0 6px; }
+  .day { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; }
+  .dbar { width:100%; border-radius:3px 3px 0 0; }
+  .dlbl { font-size:9px; color:#cbd5e1; margin-top:3px; }
+  .wks { display:flex; gap:6px; margin-top:9px; }
+  .wkb { flex:1; text-align:center; background:#f8fafc; border-radius:8px; padding:7px 4px; }
+  .wkb .v { font-size:13px; font-weight:500; color:#374151; font-variant-numeric:tabular-nums; }
+  .wkb .l { font-size:9px; color:#cbd5e1; }
+  .more { width:100%; background:none; border:none; color:#2563eb; font-size:12px; padding:8px; cursor:pointer; }
+  .lst { display:flex; justify-content:space-between; font-size:12px; padding:4px 0; }
+  .lst span:first-child { color:#374151; }
+  .lst span:last-child { color:#9ca3af; font-variant-numeric:tabular-nums; }
+  .warn { font-size:10px; color:#b45309; background:#fef3c7; border-radius:7px; padding:6px 9px; margin-top:8px; }
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <div class="top"><span class="t">Konfrontace</span><span class="x">✕</span></div>
+  <div class="wk">týden 6.–12. 7. · zobrazeno od pondělí 00:00</div>
+
+  <!-- M3 dlaždice -->
+  <div class="dlz" onclick="alert('→ M3 dotazník\n\n15 reformulací týchž položek\n7bodová škála: rozhodně ano … rozhodně ne\n+ volitelný volný text „proč tak?“\n\n(vstupní vlna byla 60 položek)')">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="font-size:14px;color:#1f2937;">Týdenní dotazník</div>
+        <div style="font-size:11px;color:#9ca3af;">15 otázek · ~4 min</div>
+      </div>
+      <div style="font-size:20px;">📋</div>
+    </div>
+  </div>
+
+  <!-- Sázka -->
+  <div class="card">
+    <div class="lbl">SÁZKA · pondělí 23:04</div>
+    <div class="pair">
+      <div class="box me"><div class="bl">tipoval jsi</div><div class="bv">01:04</div><div class="bs">1× odhad (60m)</div></div>
+      <div class="ar">→</div>
+      <div class="box"><div class="bl">skončil jsi</div><div class="bv">02:47</div><div class="bs">≈ 2,7×</div></div>
+    </div>
+  </div>
+
+  <!-- M1 -->
+  <div class="card">
+    <div class="lbl">TVŮJ TIP ODPORU · minulý týden</div>
+    <div style="font-size:13px;color:#1f2937;margin-bottom:11px;">Tipoval jsi <b>menší odpor začít</b> u:</div>
+    <div class="pair" style="margin-bottom:12px;">
+      <div class="box me"><div class="bv">Procházka</div><div class="bs" style="color:#2563eb;">tvůj tip</div></div>
+      <div class="ar">vs</div>
+      <div class="box"><div class="bv">Maily</div><div class="bs">&nbsp;</div></div>
+    </div>
+    <div class="box" style="background:#f5f7fb;">
+      <div class="bl">kolikrát jsi to skutečně spustil</div>
+      <div style="display:flex;gap:10px;margin-top:5px;">
+        <div style="flex:1;"><span style="font-size:19px;font-weight:500;color:#1f2937;">2×</span> <span class="bs">procházka</span></div>
+        <div style="flex:1;"><span style="font-size:19px;font-weight:500;color:#1f2937;">5×</span> <span class="bs">maily</span></div>
+      </div>
+    </div>
+    <div class="ctx">
+      <div class="ctxl">čas za týden — jiná osa než odpor</div>
+      <div class="ctxr">
+        <div style="flex:1;">procházka <b style="color:#374151;">1h 00m</b> · ⌀30m</div>
+        <div style="flex:1;">maily <b style="color:#374151;">3h 20m</b> · ⌀40m</div>
+      </div>
+    </div>
+    <button class="more" onclick="alert('→ další dvojice\n\n· Četba vs. Vývoj aplikace (4× / 9×)\n· Oběd vs. Nákup (5× / 2×)\n· ...\n\nzobrazeny jen dvojice s ≥8 souboji')">Další dvojice ›</button>
+  </div>
+
+  <!-- Plán vs stopa -->
+  <div class="card">
+    <div class="lbl">PLÁN vs. STOPA · středa</div>
+    <div class="pair">
+      <div class="box me"><div class="bl">plánoval jsi</div><div class="bv">5 aktivit</div><div class="bs">do 12:00</div></div>
+      <div class="ar">→</div>
+      <div class="box"><div class="bl">stihl jsi</div><div class="bv">3 aktivity</div><div class="bs">skončil 13:40</div></div>
+    </div>
+  </div>
+
+  <!-- Ranní retrospektiva -->
+  <div class="card">
+    <div class="lbl">VČEREJŠEK</div>
+    <div style="font-size:13px;color:#374151;line-height:1.5;">
+      Aktivity se natáhly o <b>47 minut</b> oproti dnům, kdy byla noční mezera 7,5 h.
+      <span style="color:#9ca3af;">Kdyby každá skončila o ~2 minuty dřív, uvolnilo by se 47 minut.</span>
+    </div>
+    <div style="margin-top:11px;">
+      <div class="lst"><span>Četba</span><span style="color:#dc2626;">+40m</span></div>
+      <div class="lst"><span>Maily</span><span style="color:#dc2626;">+25m</span></div>
+      <div class="lst"><span>Oběd</span><span style="color:#059669;">−18m</span></div>
+    </div>
+    <div style="font-size:10px;color:#cbd5e1;margin-top:8px;">z 9 dnů se 7,5h mezerou</div>
+  </div>
+
+  <!-- Spánek -->
+  <div class="card">
+    <div class="lbl">ZAČÁTEK NOČNÍ MEZERY vs. 23:00</div>
+    <div class="days" id="days"></div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:#6b7280;padding-top:6px;border-top:1px solid #f1f5f9;">
+      <span>suma <b style="color:#374151;">−395m</b></span>
+      <span>medián <b style="color:#374151;">−52m</b></span>
+    </div>
+    <div class="lbl" style="margin:12px 0 6px;">POSLEDNÍ 4 TÝDNY · medián</div>
+    <div class="wks">
+      <div class="wkb"><div class="v">−180</div><div class="l">t−3</div></div>
+      <div class="wkb"><div class="v">−95</div><div class="l">t−2</div></div>
+      <div class="wkb"><div class="v">−140</div><div class="l">t−1</div></div>
+      <div class="wkb" style="background:#eef4ff;"><div class="v" style="color:#2563eb;">−52</div><div class="l">tento</div></div>
+    </div>
+    <div class="warn">appka nezná čas usnutí — zná začátek noční mezery (kdy jsi přestal trackovat)</div>
+  </div>
+
+  <div class="quiet" style="text-align:center;padding:4px 12px 8px;">Postaveno vedle sebe. Význam je na tobě.</div>
+
+</div>
+
+<script>
+var d=[[-95,'po'],[-40,'út'],[-120,'st'],[-15,'čt'],[-52,'pá'],[+18,'so'],[-91,'ne']];
+var mx=130;
+document.getElementById('days').innerHTML=d.map(function(x){
+  var v=x[0], h=Math.max(3,Math.abs(v)/mx*46);
+  var col = v>0 ? '#10b981' : (Math.abs(v)>90 ? '#f59e0b' : '#94a3b8');
+  return '<div class="day">'
+    +'<div style="font-size:8px;color:#cbd5e1;margin-bottom:2px;">'+(v>0?'+':'')+v+'</div>'
+    +'<div class="dbar" style="height:'+h+'px;background:'+col+';"></div>'
+    +'<div class="dlbl">'+x[1]+'</div></div>';
+}).join('');
+</script>
+</body>
+</html>

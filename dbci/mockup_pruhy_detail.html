@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dBCI — pruhy a detail aktivity (mockup)</title>
+<style>
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { margin:0; background:#e8ecf3; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; padding:16px; }
+  .wrap { max-width:380px; margin:0 auto; }
+  .nav { display:flex; gap:6px; margin-bottom:10px; }
+  .nav button { flex:1; padding:8px; border-radius:10px; border:1px solid #cbd5e1; background:#fff; font-size:12px; color:#374151; cursor:pointer; }
+  .nav button.on { background:#334155; color:#fff; border-color:#334155; }
+  .phone { background:#f5f7fb; border-radius:22px; padding:12px; border:1px solid #dbe2ea; min-height:520px; }
+  .hd { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .hd .t { font-size:15px; font-weight:500; color:#1f2937; }
+  .x { color:#9ca3af; font-size:16px; cursor:pointer; }
+  .card { background:#fff; border:1px solid #dbe2ea; border-radius:14px; padding:14px; margin-bottom:10px; }
+  .lbl { font-size:11px; color:#6b7280; letter-spacing:.04em; margin-bottom:8px; }
+  .bar { margin-bottom:11px; cursor:pointer; }
+  .bl { display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px; }
+  .bl .n { color:#374151; font-weight:500; }
+  .bl .v { color:#9ca3af; font-variant-numeric:tabular-nums; }
+  .track { height:9px; background:#eef2f7; border-radius:5px; overflow:hidden; display:flex; }
+  .fill { height:100%; }
+  .live { height:100%; opacity:.45; }
+  .expand { background:#f8fafc; border-radius:8px; padding:9px 11px; margin-top:6px; }
+  .er { display:flex; justify-content:space-between; font-size:12px; color:#6b7280; padding:2px 0; }
+  .sec { font-size:11px; color:#9ca3af; margin:14px 0 7px; }
+  .note { font-size:11px; color:#9ca3af; text-align:center; margin-top:10px; }
+  /* detail */
+  .big { font-size:30px; font-weight:500; color:#1f2937; font-variant-numeric:tabular-nums; }
+  .tag { font-size:12px; padding:3px 10px; border-radius:9px; color:#374151; background:#fde68a; }
+  .meta { display:flex; justify-content:space-between; font-size:13px; padding:6px 0; border-bottom:1px solid #f1f5f9; }
+  .meta span:first-child { color:#9ca3af; }
+  .meta span:last-child { color:#374151; font-variant-numeric:tabular-nums; }
+  .qr { display:flex; gap:5px; margin:12px 0; }
+  .q { flex:1; padding:9px 4px; border-radius:9px; border:1px solid #dbe2ea; background:#fff; font-size:11px; color:#6b7280; cursor:pointer; }
+  .q.on { background:#fef3c7; border-color:#fcd34d; color:#92400e; }
+  .q.w { flex:0 0 34px; }
+  .grid6 { display:grid; grid-template-columns:repeat(6,1fr); gap:4px; margin:8px 0 4px; }
+  .grid6 button { padding:8px 0; border-radius:8px; border:1px solid #dbe2ea; background:#fff; font-size:11px; color:#374151; cursor:pointer; }
+  .nt { background:#f8fafc; border:1px solid #eef2f7; border-radius:10px; padding:10px; font-size:12px; color:#475569; margin-bottom:6px; white-space:pre-line; }
+  .ico { display:flex; gap:12px; color:#6b7280; font-size:17px; }
+  .dot { font-size:8px; }
+  .warn { font-size:11px; color:#92400e; background:#fef3c7; border-radius:8px; padding:7px 10px; margin-top:8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <button class="on" id="n1">Pruhy (📊)</button>
+    <button id="n2">Detail aktivity</button>
+  </div>
+  <div class="phone" id="app"></div>
+</div>
+
+<script>
+var open=null;
+
+var bars=[
+  {n:'sezení', p:62, m:'6h 12m', c:'#f59e0b', live:4, pos:1,
+   sub:[['Vývoj aplikace','3h 20m'],['Maily','1h 42m'],['Oběd','12m'],['Četba','58m']]},
+  {n:'chůze', p:14, m:'1h 24m', c:'#10b981', pos:1,
+   sub:[['Přesun Škola z Domov','48m'],['Procházka','21m'],['Nákup','15m']]},
+  {n:'ležení', p:9, m:'54m', c:'#ef4444', pos:1,
+   sub:[['Odpočinek s mobilem','54m']]},
+  {n:'stání', p:5, m:'30m', c:'#8b5cf6', pos:1, sub:[['Vaření','30m']]},
+  {n:'běh', p:0, m:'0m', c:'#06b6d4', pos:1, sub:[]},
+  {n:'mozek', p:71, m:'7h 06m', c:'#2563eb', live:4,
+   sub:[['Vývoj aplikace','3h 20m'],['Maily','1h 42m'],['Četba','58m'],['Přednáška','1h 06m']]},
+  {n:'denní světlo', p:11, m:'1h 06m', c:'#eab308',
+   sub:[['Přesun Škola z Domov','48m'],['Procházka','18m']]},
+  {n:'brániční dýchání', p:3, m:'18m', c:'#14b8a6', sub:[['Procházka','18m']]},
+  {n:'rotace hrudní páteře', p:0, m:'0m', c:'#a855f7', sub:[]},
+  {n:'odstup od myšlenek', p:3, m:'18m', c:'#f472b6', sub:[['Procházka','18m']]}
+];
+
+function barHtml(b,i){
+  var h='<div class="bar" onclick="tog('+i+')">'
+    +'<div class="bl"><span class="n">'+b.n+'</span><span class="v">'+(b.p?b.p+' % · '+b.m:'—')+'</span></div>'
+    +'<div class="track">';
+  if(b.p){
+    h+='<div class="fill" style="width:'+(b.p-(b.live||0))+'%;background:'+b.c+';"></div>';
+    if(b.live) h+='<div class="live" style="width:'+b.live+'%;background:'+b.c+';"></div>';
+  }
+  h+='</div>';
+  if(open===i){
+    h+='<div class="expand">';
+    if(b.sub.length) b.sub.forEach(function(s){h+='<div class="er"><span>'+s[0]+'</span><span>'+s[1]+'</span></div>';});
+    else h+='<div class="er" style="color:#cbd5e1;"><span>žádná aktivita</span></div>';
+    h+='</div>';
+  }
+  return h+'</div>';
+}
+
+function pruhy(){
+  var h='<div class="hd"><span class="t">Pondělí 13. 7. · pruhy</span><span class="x">✕</span></div>'
+    +'<div class="card">'
+    +'<div class="lbl">POLOHA · jedna z (nesčítá se přes 100 %)</div>';
+  bars.forEach(function(b,i){ if(b.pos) h+=barHtml(b,i); });
+  h+='</div><div class="card"><div class="lbl">KVALITY · překrývají se (součet může přesáhnout 100 %)</div>';
+  bars.forEach(function(b,i){ if(!b.pos) h+=barHtml(b,i); });
+  h+='</div>'
+    +'<div class="note">% z dnešního zalogovaného bdění (10h 02m)<br>světlejší část = přírůstek běžící aktivity · klepni na pruh</div>';
+  document.getElementById('app').innerHTML=h;
+}
+
+function tog(i){ open = (open===i)?null:i; pruhy(); }
+
+function detail(){
+  document.getElementById('app').innerHTML=
+   '<div class="hd"><span class="x">‹</span><div class="ico"><span>✎</span><span>🗑</span></div></div>'
+  +'<div class="card">'
+    +'<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px;">'
+      +'<div class="big" id="dlen">1h 48m 41s</div><span class="tag">work - VVČ - článek</span></div>'
+    +'<div style="font-size:15px;color:#374151;margin-bottom:12px;">work - 5. hit</div>'
+    +'<div class="meta"><span>délka vs. obvykle</span><span id="pct">78. percentil</span></div>'
+    +'<div class="meta"><span>obvyklé rozpětí (Q1–Q3)</span><span>45–125m</span></div>'
+    +'<div class="meta" style="border:none;"><span>z kolika</span><span>24 výskytů</span></div>'
+  +'</div>'
+
+  +'<div class="card">'
+    +'<div class="lbl">ZAČÁTEK</div>'
+    +'<input type="datetime-local" id="s1" value="2026-07-13T21:30" style="width:100%;border:1px solid #dbe2ea;border-radius:9px;padding:10px;font-size:14px;margin-bottom:6px;">'
+    +'<div class="grid6">'
+      +'<button onclick="mv(\'s1\',60)">+60</button><button onclick="mv(\'s1\',30)">+30</button><button onclick="mv(\'s1\',15)">+15</button>'
+      +'<button onclick="mv(\'s1\',10)">+10</button><button onclick="mv(\'s1\',5)">+5</button><button onclick="mv(\'s1\',1)">+1</button>'
+      +'<button onclick="mv(\'s1\',-60)">−60</button><button onclick="mv(\'s1\',-30)">−30</button><button onclick="mv(\'s1\',-15)">−15</button>'
+      +'<button onclick="mv(\'s1\',-10)">−10</button><button onclick="mv(\'s1\',-5)">−5</button><button onclick="mv(\'s1\',-1)">−1</button>'
+    +'</div>'
+    +'<div style="display:flex;gap:6px;margin-top:6px;">'
+      +'<button style="flex:1;padding:8px;border-radius:8px;border:1px solid #dbe2ea;background:#eef2f7;font-size:12px;color:#374151;cursor:pointer;" onclick="nowBtn(\'s1\')">Now</button>'
+      +'<button style="flex:1;padding:8px;border-radius:8px;border:1px solid #dbe2ea;background:#eef2f7;font-size:12px;color:#374151;cursor:pointer;" onclick="lastBtn()">Last</button>'
+    +'</div>'
+
+    +'<div class="lbl" style="margin-top:14px;">KONEC</div>'
+    +'<input type="datetime-local" id="s2" value="2026-07-13T23:18" style="width:100%;border:1px solid #dbe2ea;border-radius:9px;padding:10px;font-size:14px;margin-bottom:6px;">'
+    +'<div class="grid6">'
+      +'<button onclick="mv(\'s2\',60)">+60</button><button onclick="mv(\'s2\',30)">+30</button><button onclick="mv(\'s2\',15)">+15</button>'
+      +'<button onclick="mv(\'s2\',10)">+10</button><button onclick="mv(\'s2\',5)">+5</button><button onclick="mv(\'s2\',1)">+1</button>'
+      +'<button onclick="mv(\'s2\',-60)">−60</button><button onclick="mv(\'s2\',-30)">−30</button><button onclick="mv(\'s2\',-15)">−15</button>'
+      +'<button onclick="mv(\'s2\',-10)">−10</button><button onclick="mv(\'s2\',-5)">−5</button><button onclick="mv(\'s2\',-1)">−1</button>'
+    +'</div>'
+    +'<div style="display:flex;gap:6px;margin-top:6px;">'
+      +'<button style="flex:1;padding:8px;border-radius:8px;border:1px solid #dbe2ea;background:#eef2f7;font-size:12px;color:#374151;cursor:pointer;" onclick="nowBtn(\'s2\')">Now</button>'
+    +'</div>'
+    +'<div id="warn"></div>'
+    +'<div class="note" style="margin-top:8px;">klepni na datum/čas → nativní picker (na mobilu kolečko h/min)<br>tlačítka posouvají o minuty · délka se přepočítá</div>'
+  +'</div>'
+
+  +'<div class="card">'
+    +'<div class="lbl">RYCHLÉ</div>'
+    +'<div class="qr">'
+      +'<button class="q">🔋 únava</button>'
+      +'<button class="q">💨 zívnutí</button>'
+      +'<button class="q on">⚠️ zásek</button>'
+      +'<button class="q w">⋯</button>'
+    +'</div>'
+  +'</div>'
+
+  +'<div class="card">'
+    +'<div class="lbl">POZNÁMKY · 1</div>'
+    +'<div class="nt">1-5 příprava práce\n5-75 zkoušel 3x studenty\n75-80 zapsal známky</div>'
+    +'<button style="width:100%;padding:9px;border-radius:8px;border:1px dashed #cbd5e1;background:#fff;font-size:12px;color:#9ca3af;cursor:pointer;">+ poznámka</button>'
+  +'</div>'
+
+  +'<div class="card">'
+    +'<div class="lbl">INDIKÁTORY</div>'
+    +'<div style="display:flex;gap:14px;font-size:11px;color:#6b7280;flex-wrap:wrap;">'
+      +'<span><span class="dot" style="color:#f59e0b;">●</span> zásek</span>'
+      +'<span><span class="dot" style="color:#94a3b8;">●</span> poznámka</span>'
+      +'<span><span class="dot" style="color:#a78bfa;">●</span> flagy 2·3</span>'
+      +'<span style="color:#cbd5e1;"><span class="dot">○</span> sázka</span>'
+      +'<span style="color:#cbd5e1;"><span class="dot">○</span> hodnota</span>'
+      +'<span><span class="dot" style="color:#64748b;">●</span> private</span>'
+    +'</div>'
+    +'<div class="warn">běžící aktivitu nelze smazat · poznámky lze přidávat</div>'
+  +'</div>';
+  recalc();
+}
+
+function mv(id,min){
+  var el=document.getElementById(id);
+  var d=new Date(el.value);
+  d.setMinutes(d.getMinutes()+min);
+  el.value=d.toISOString().slice(0,16);
+  recalc();
+}
+function nowBtn(id){
+  var d=new Date();
+  document.getElementById(id).value=d.toISOString().slice(0,16);
+  recalc();
+}
+function lastBtn(){
+  document.getElementById('s1').value='2026-07-13T21:24';
+  recalc();
+}
+function recalc(){
+  var a=new Date(document.getElementById('s1').value), b=new Date(document.getElementById('s2').value);
+  var sec=Math.round((b-a)/1000), w=document.getElementById('warn');
+  if(sec<0){
+    document.getElementById('dlen').textContent='—';
+    w.innerHTML='<div class="warn" style="margin-top:8px;">konec je před začátkem</div>';
+    return;
+  }
+  var h=Math.floor(sec/3600), m=Math.floor(sec%3600/60), s=sec%60;
+  document.getElementById('dlen').textContent=(h?h+'h ':'')+m+'m '+(s<10?'0':'')+s+'s';
+  var mins=sec/60;
+  var p = mins<45 ? Math.round(mins/45*25) : mins>125 ? 97 : Math.round(25+(mins-45)/80*50);
+  document.getElementById('pct').textContent = mins>200 ? 'odlehlá · '+(mins/85).toFixed(1)+'× obvyklé' : p+'. percentil';
+  w.innerHTML = (mins>200) ? '<div class="warn" style="margin-top:8px;background:#fef3c7;color:#92400e;">odlehlá hodnota — percentil se neuvádí</div>' : '';
+}
+
+document.getElementById('n1').onclick=function(){
+  this.classList.add('on'); document.getElementById('n2').classList.remove('on'); open=null; pruhy();
+};
+document.getElementById('n2').onclick=function(){
+  this.classList.add('on'); document.getElementById('n1').classList.remove('on'); detail();
+};
+pruhy();
+</script>
+</body>
+</html>

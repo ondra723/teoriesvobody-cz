@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dBCI — Nastavení (mockup)</title>
+<style>
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { margin:0; background:#e8ecf3; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; padding:16px; }
+  .phone { max-width:380px; margin:0 auto; background:#f5f7fb; border-radius:22px; padding:12px; border:1px solid #dbe2ea; min-height:560px; }
+  .top { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .t { font-size:15px; font-weight:500; color:#1f2937; }
+  .x { color:#9ca3af; cursor:pointer; }
+  .grp { font-size:11px; color:#9ca3af; letter-spacing:.04em; margin:14px 4px 7px; }
+  .card { background:#fff; border:1px solid #dbe2ea; border-radius:14px; overflow:hidden; margin-bottom:4px; }
+  .r { display:flex; align-items:center; justify-content:space-between; padding:12px 13px; border-bottom:1px solid #f5f7fb; cursor:pointer; }
+  .r:last-child { border:none; }
+  .r .n { font-size:13px; color:#1f2937; }
+  .r .s { font-size:11px; color:#9ca3af; margin-top:1px; }
+  .r .v { font-size:13px; color:#6b7280; font-variant-numeric:tabular-nums; }
+  .chev { color:#cbd5e1; font-size:13px; }
+  .sw { width:40px; height:23px; border-radius:12px; background:#e2e8f0; position:relative; transition:.2s; flex:0 0 40px; }
+  .sw.on { background:#2563eb; }
+  .sw i { position:absolute; top:2px; left:2px; width:19px; height:19px; border-radius:50%; background:#fff; transition:.2s; }
+  .sw.on i { left:19px; }
+  input[type=number], input[type=time], input[type=text] { width:74px; border:1px solid #dbe2ea; border-radius:7px; padding:6px; font-size:13px; text-align:right; }
+  input[type=text].w { width:120px; text-align:left; }
+  .lock { font-size:9px; color:#b45309; background:#fef3c7; padding:2px 6px; border-radius:5px; margin-left:6px; }
+  .note { font-size:11px; color:#9ca3af; text-align:center; margin:10px 4px; line-height:1.5; }
+  .sub { background:#f8fafc; padding:10px 13px; font-size:12px; color:#6b7280; border-bottom:1px solid #f5f7fb; }
+  .chip { display:inline-block; font-size:11px; padding:3px 8px; border-radius:12px; background:#eef2f7; color:#374151; margin:0 4px 4px 0; }
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <div class="top"><span class="t">Nastavení</span><span class="x">✕</span></div>
+
+  <div class="grp">ČAS A DEN</div>
+  <div class="card">
+    <div class="r"><div><div class="n">Hranice dne (zobrazení)</div><div class="s">aktivita patří do dne podle startu</div></div><input type="time" value="00:00"></div>
+    <div class="r"><div><div class="n">Přiřazení spánkové mezery</div><div class="s">mezera po této hodině → další den</div></div><input type="time" value="16:00"></div>
+    <div class="r"><div><div class="n">Optimální čas usnutí</div><div class="s">kotva pro odpočet</div></div><input type="time" value="23:00"></div>
+    <div class="r"><div><div class="n">Optimální délka spánku</div></div><input type="number" value="7.5" step="0.5"></div>
+    <div class="r"><div><div class="n">Min. mezera = spánek</div><div class="s">kratší = přechodový čas</div></div><input type="number" value="20"></div>
+    <div class="r"><div><div class="n">Max. mezera = spánek</div><div class="s">delší = patrně vynechán tracking</div></div><input type="number" value="14"></div>
+    <div class="r" onclick="alert('Ráno 4:00–7:59\nDopoledne 8:00–11:59\nPoledne 12:00–13:59\nOdpoledne 14:00–17:59\nVečer 18:00–21:59\nNoc 22:00–3:59\n\n(posuvné hranice — kolize nemožná)')">
+      <div><div class="n">Časová okna</div><div class="s">6 oken · posuvné hranice</div></div><span class="chev">›</span></div>
+  </div>
+
+  <div class="grp">JAK ČASTO SE PTÁT</div>
+  <div class="card">
+    <div class="r"><div><div class="n">M1/M2 — kdy</div><div class="s">po stopnutí / po startu</div></div><span class="v">po startu ›</span></div>
+    <div class="r"><div><div class="n">M1/M2 — každý n-tý přechod</div></div><input type="number" value="1"></div>
+    <div class="r"><div><div class="n">Min. délka předchozí aktivity</div><div class="s">kratší → neptat se</div></div><input type="number" value="5"></div>
+    <div class="r"><div><div class="n">Sázka — od jaké délky</div></div><input type="number" value="20"></div>
+    <div class="r"><div><div class="n">Peek — za kolik sekund zmizí</div></div><input type="number" value="15"></div>
+    <div class="r"><div><div class="n">Debounce zápisu stavů</div><div class="s">ukládá se až ustálená hodnota</div></div><input type="number" value="10"></div>
+    <div class="r"><div><div class="n">Undo po smazání</div></div><input type="number" value="5"></div>
+  </div>
+
+  <div class="grp">CO SE MI UKAZUJE</div>
+  <div class="card">
+    <div class="r" onclick="tog(this)"><div><div class="n">Odpočet do času usnutí</div><div class="s">v peek okně</div></div><div class="sw on"><i></i></div></div>
+    <div class="r" onclick="tog(this)"><div><div class="n">Nejbližší úkol na home</div></div><div class="sw on"><i></i></div></div>
+    <div class="r"><div><div class="n">Granularita odpočtů</div></div><span class="v">minuty ›</span></div>
+    <div class="r" onclick="tog(this)"><div><div class="n">Popisné statistiky</div><div class="s">počet záznamů, ⌀7d, počet tagů</div></div><div class="sw"><i></i></div></div>
+    <div class="r" onclick="tog(this)"><div><div class="n">Slogan</div><div class="s">3 věty · rotace při vyvolání</div></div><div class="sw on"><i></i></div></div>
+    <div class="r" onclick="tog(this)"><div><div class="n">Auto-kontrast textu tagu</div><div class="s">vypnuto = stálá šedá</div></div><div class="sw"><i></i></div></div>
+    <div class="r"><div><div class="n">Pořadí záložek</div><div class="s">Aktivity · Cíle · Záměry · Úkoly</div></div><span class="chev">›</span></div>
+    <div class="r"><div><div class="n">Metrika délky</div><div class="s">na dlaždicích a v cíli</div></div><span class="v">Q3 ›</span></div>
+  </div>
+
+  <div class="grp">MOJE POLOŽKY <span style="color:#cbd5e1;">— ergonomie, ladím si sám</span></div>
+  <div class="card">
+    <div class="r" onclick="alert('5 aktivitních otázek:\n\n1. Brániční dýchání? (vůbec → silně)\n2. Jak jsem se cítil? (otrávený → spokojený)\n3. Zaostření na blízko? (ostře → nelze)\n4. Rotace hrudní páteře? (volně → strnule)\n5. [vlastní]\n\n+ přidat další · počet není omezen')">
+      <div><div class="n">Aktivitní otázky</div><div class="s">5 · 7bodová škála</div></div><span class="chev">›</span></div>
+    <div class="r" onclick="alert('Rychlé (u každé aktivity):\n· únava (4 stupně)\n· zívnutí\n· zásek\n\nZa ⋯ (default):\n· hlad · bolest hlavy · tepelná nepohoda · emocionální rozrušení\n\n+ přidat vlastní (např. Kvalita vidění, 5 stupňů)\npočet stupňů je per položka')">
+      <div><div class="n">Tělesné stavy</div><div class="s">3 rychlé · 4 za ⋯</div></div><span class="chev">›</span></div>
+    <div class="r" onclick="alert('POLOHA (jedna z):\nsezení · stání · chůze · běh · ležení\n\nKVALITY (nezávisle):\nmozek · rotace hrudní páteře · brániční dýchání · odstup od myšlenek · denní světlo')">
+      <div><div class="n">Kategorie času</div><div class="s">1 poloha + 5 kvalit</div></div><span class="chev">›</span></div>
+    <div class="r"><div><div class="n">Barvy tagů</div><div class="s">742 tagů · 12 obarvených</div></div><span class="chev">›</span></div>
+    <div class="r" onclick="alert('když startuju [Večeře]\na [Bral rybí tuk] nebylo dnes zalogováno\n→ ukaž: „Většinou si bereš rybí tuk. Dneska to máš jinak?“\n\n(spouštěč jen na STARTU — na konci je pozdě)')">
+      <div><div class="n">Připomínková pravidla</div><div class="s">2 aktivní</div></div><span class="chev">›</span></div>
+    <div class="r"><div><div class="n">Startovní sada aktivit</div><div class="s">8 příkladů — nahraď vlastními</div></div><span class="chev">›</span></div>
+  </div>
+
+  <div class="grp">SDÍLENÍ</div>
+  <div class="card">
+    <div class="r"><div><div class="n">Moje ID</div><div class="s">pošli ho tomu, s kým chceš sdílet</div></div><span class="v" style="font-size:11px;">a7f3…c21 ⧉</span></div>
+    <div class="r"><div><div class="n">Petr</div><div class="s">a3b1…9de · od 2. 7.</div></div><span class="chev">›</span></div>
+    <div class="r"><div><div class="n">+ přidat partnera</div></div><span class="chev">›</span></div>
+    <div class="r"><div><div class="n">Aktivity defaultně</div><div class="s">private = druhý vidí jen čas</div></div><span class="v">private ›</span></div>
+    <div class="sub">Odebrání skryje data v aplikaci, ale ve verzi 1 negarantuje tvrdé odvolání přístupu.</div>
+  </div>
+
+  <div class="grp">MĚŘICÍ NÁSTROJ <span class="lock">jen tester</span></div>
+  <div class="card">
+    <div class="r" style="opacity:.45;"><div><div class="n">Znění M2</div><div class="s">stejné pro všechny — jinak nejde srovnávat</div></div><span class="chev">🔒</span></div>
+    <div class="r" style="opacity:.45;"><div><div class="n">M3 banka a znění</div><div class="s">60 položek × ~10 reformulací</div></div><span class="chev">🔒</span></div>
+    <div class="r"><div><div class="n">Testerské heslo</div></div><input type="text" placeholder="…" style="width:90px;"></div>
+  </div>
+
+  <div class="note">Ergonomii si ladíš sám. Měřicí nástroj (M2, M3) je pevný —<br>jinak by měl každý jiný metr a nešlo by nic srovnat.</div>
+
+</div>
+
+<script>
+function tog(r){ r.querySelector('.sw').classList.toggle('on'); }
+</script>
+</body>
+</html>

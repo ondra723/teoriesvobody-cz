@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dBCI — hlavní obrazovka (mockup)</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin:0; background:#e8ecf3; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; padding:16px; }
+  .phone { max-width:380px; margin:0 auto; background:#f5f7fb; border-radius:22px; padding:10px 10px 16px; border:1px solid #dbe2ea; }
+  .top { display:flex; align-items:center; justify-content:space-between; padding:8px 8px 12px; }
+  .top .title { font-size:17px; font-weight:500; color:#1f2937; }
+  .icons { display:flex; gap:14px; color:#6b7280; font-size:17px; }
+  .card { background:#fff; border-radius:16px; padding:16px; border:1px solid #dbe2ea; margin-bottom:10px; }
+  .lbl { font-size:11px; color:#6b7280; letter-spacing:.04em; }
+  #clock { font-size:34px; font-weight:500; color:#1f2937; font-variant-numeric:tabular-nums; transition:color .4s; }
+  .tag { font-size:12px; padding:3px 10px; border-radius:9px; color:#374151; }
+  .qrow { display:flex; gap:5px; margin:12px 0; }
+  .q { flex:1; padding:9px 4px; border-radius:9px; border:1px solid #dbe2ea; background:#fff; font-size:11px; color:#6b7280; cursor:pointer; }
+  .q.w { flex:0 0 34px; }
+  .tl { flex:1; padding:9px 0; border-radius:9px; border:1px solid #dbe2ea; background:#fff; font-size:11px; color:#374151; cursor:pointer; }
+  .btn { background:#2563eb; color:#fff; border:none; border-radius:12px; padding:13px; font-size:16px; font-weight:500; cursor:pointer; }
+  .btn2 { background:#eef2f7; color:#6b7280; border:none; border-radius:12px; cursor:pointer; }
+  .tab { white-space:nowrap; padding:7px 12px; border-radius:20px; border:1px solid #dbe2ea; font-size:12px; background:#fff; color:#374151; cursor:pointer; }
+  .tab.on { background:#2563eb; color:#fff; border-color:#2563eb; }
+  .row { display:flex; align-items:center; gap:10px; background:#fff; border:1px solid #dbe2ea; border-radius:12px; padding:10px 12px; margin-bottom:6px; }
+  .dur { min-width:58px; font-size:12px; font-weight:500; color:#374151; font-variant-numeric:tabular-nums; }
+  .nm { font-size:13px; color:#1f2937; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .sub { font-size:11px; color:#9ca3af; }
+  .dot { font-size:8px; }
+  #peek { display:none; background:#fff; border:1px solid #2563eb; border-radius:14px; padding:13px; margin-bottom:10px; }
+  .pk { display:flex; justify-content:space-between; font-size:13px; color:#374151; margin-bottom:7px; }
+  .pk span:first-child { color:#6b7280; }
+  .num { font-variant-numeric:tabular-nums; }
+  .note { font-size:11px; color:#9ca3af; }
+</style>
+</head>
+<body>
+<div style="max-width:380px;margin:0 auto 10px;display:flex;gap:4px;flex-wrap:wrap;font-size:11px;">
+  <a href="mockup_hlavni.html" style="padding:5px 9px;border-radius:7px;background:#334155;color:#fff;text-decoration:none;">hlavní</a>
+  <a href="mockup_vstup.html" style="padding:5px 9px;border-radius:7px;background:#fff;color:#475569;text-decoration:none;border:1px solid #cbd5e1;">vstup</a>
+  <a href="mockup_prechod.html" style="padding:5px 9px;border-radius:7px;background:#fff;color:#475569;text-decoration:none;border:1px solid #cbd5e1;">přechod</a>
+  <a href="mockup_hledani.html" style="padding:5px 9px;border-radius:7px;background:#fff;color:#475569;text-decoration:none;border:1px solid #cbd5e1;">hledání</a>
+  <a href="mockup_cile.html" style="padding:5px 9px;border-radius:7px;background:#fff;color:#475569;text-decoration:none;border:1px solid #cbd5e1;">cíle</a>
+  <a href="mockup_planovani.html" style="padding:5px 9px;border-radius:7px;background:#fff;color:#475569;text-decoration:none;border:1px solid #cbd5e1;">plánování</a>
+  <a href="mockup_konfrontace.html" style="padding:5px 9px;border-radius:7px;background:#fff;color:#475569;text-decoration:none;border:1px solid #cbd5e1;">konfrontace</a>
+  <a href="mockup_pruhy_detail.html" style="padding:5px 9px;border-radius:7px;background:#fff;color:#475569;text-decoration:none;border:1px solid #cbd5e1;">pruhy/detail</a>
+  <a href="mockup_nastaveni.html" style="padding:5px 9px;border-radius:7px;background:#fff;color:#475569;text-decoration:none;border:1px solid #cbd5e1;">nastavení</a>
+</div>
+<div class="phone">
+
+  <div class="top">
+    <span class="title">Stopa</span>
+    <div class="icons">
+      <a href="mockup_hledani.html" style="text-decoration:none;">🔍</a>
+      <a href="mockup_konfrontace.html" style="text-decoration:none;">📋</a>
+      <a href="mockup_nastaveni.html" style="text-decoration:none;">⚙️</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div class="lbl">PRÁVĚ BĚŽÍ</div>
+      <div class="note">6. dnes</div>
+    </div>
+    <div style="display:flex;align-items:baseline;justify-content:space-between;margin:2px 0 8px;">
+      <div id="clock">18m 42s</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span id="yawns" class="note"></span>
+        <span class="tag" style="background:#fde68a;">práce</span>
+      </div>
+    </div>
+    <div style="font-size:15px;color:#374151;">Vývoj aplikace</div>
+
+    <div class="qrow">
+      <button class="q" id="tired">🔋 únava</button>
+      <button class="q" id="yawn">💨 zívnutí</button>
+      <button class="q" id="stuck">⚠️ zásek</button>
+      <button class="q w" id="more">⋯</button>
+    </div>
+
+    <div class="qrow" id="tiredPick" style="display:none;">
+      <button class="tl" data-t="0">zanedb.</button>
+      <button class="tl" data-t="1">malá</button>
+      <button class="tl" data-t="2">standard</button>
+      <button class="tl" data-t="3">vysoká</button>
+    </div>
+
+    <div class="qrow" id="morePick" style="display:none;flex-wrap:wrap;">
+      <button class="tl">hlad</button>
+      <button class="tl">bolest hlavy</button>
+      <button class="tl">teplo/zima</button>
+      <button class="tl" id="valBtn">📊 hodnota</button>
+    </div>
+
+    <div id="valPanel" style="display:none;background:#f8fafc;border:1px solid #dbe2ea;border-radius:11px;padding:11px;margin-bottom:12px;">
+      <div style="font-size:11px;color:#6b7280;letter-spacing:.04em;margin-bottom:8px;">ZAPSAT HODNOTU</div>
+      <input id="vName" placeholder="veličina (napiš 3 znaky…)" autocomplete="off"
+             style="width:100%;border:1px solid #dbe2ea;border-radius:9px;padding:9px;font-size:14px;margin-bottom:6px;">
+      <div id="vDd"></div>
+      <div id="vNew" style="display:none;background:#eef4ff;border:1px solid #cfe0fb;border-radius:9px;padding:9px;margin-bottom:6px;">
+        <div style="font-size:11px;color:#2563eb;margin-bottom:7px;">nová veličina — jednorázová volba</div>
+        <input id="vUnit" placeholder="jednotka (%, l, ks…)"
+               style="width:100%;border:1px solid #dbe2ea;border-radius:8px;padding:8px;font-size:13px;margin-bottom:7px;">
+        <div style="display:flex;gap:6px;">
+          <button class="vt" data-t="stav" style="flex:1;padding:9px 6px;border-radius:8px;border:1px solid #dbe2ea;background:#fff;font-size:11px;color:#374151;cursor:pointer;text-align:left;">
+            <b>stav</b><div style="color:#9ca3af;">hladina · 30 % → 78 %<br>počítá rozdíly</div></button>
+          <button class="vt" data-t="prirustek" style="flex:1;padding:9px 6px;border-radius:8px;border:1px solid #dbe2ea;background:#fff;font-size:11px;color:#374151;cursor:pointer;text-align:left;">
+            <b>přírůstek</b><div style="color:#9ca3af;">množství · 32 l<br>počítá sumu/den</div></button>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <input id="vVal" type="number" placeholder="hodnota"
+               style="flex:1;border:1px solid #dbe2ea;border-radius:9px;padding:9px;font-size:14px;">
+        <span id="vU" style="font-size:13px;color:#9ca3af;min-width:22px;"></span>
+        <button id="vSave" style="padding:9px 14px;border-radius:9px;border:none;background:#2563eb;color:#fff;font-size:13px;cursor:pointer;">Uložit</button>
+      </div>
+      <div id="vHist" style="margin-top:9px;"></div>
+    </div>
+
+    <div style="display:flex;gap:8px;">
+      <button class="btn" style="flex:1;">⏹ Stop</button>
+      <button class="btn2" id="peekBtn" style="width:52px;font-size:18px;">🕐</button>
+    </div>
+  </div>
+
+  <div id="peek">
+    <div class="note" style="margin-bottom:9px;">zmizí za <span id="cd">15</span>s</div>
+    <div class="pk"><span>⏳ do 23:00 (usnutí)</span><span class="num">3h 41m</span></div>
+    <div class="pk"><span>⏳ cíl · Čištění zubů</span><span class="num">3h 51m</span></div>
+    <div class="pk"><span>⏳ úkol · Zavolat účetní</span><span class="num">2d 4h</span></div>
+    <div style="border-top:1px solid #f5f7fb;margin:8px 0;"></div>
+    <div class="pk" style="margin-bottom:3px;"><span style="color:#374151;">záměr · Jít ve 22:00 spát</span><span></span></div>
+    <div class="pk" style="padding-left:10px;"><span style="font-size:12px;">⏱ běží (od založení)</span><span class="num" style="color:#2563eb;">9h 12m</span></div>
+    <div class="pk" style="padding-left:10px;"><span style="font-size:12px;">⏳ do deadline</span><span class="num" style="color:#b45309;">3h 41m</span></div>
+    <div class="note" style="font-style:italic;margin-top:11px;border-top:1px solid #eef2f7;padding-top:9px;">
+      Stopa ví, co bylo. O tom, co teď dokážeš, ale neví nic.
+    </div>
+  </div>
+
+  <div style="display:flex;gap:6px;margin-bottom:9px;overflow-x:auto;padding:2px;">
+    <button class="tab on" data-t="akce">Aktivity</button>
+    <button class="tab" data-t="cile">Cíle</button>
+    <button class="tab" data-t="zam">Záměry</button>
+    <button class="tab" data-t="ukoly">Úkoly</button>
+  </div>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:0 4px 7px;">
+    <div style="font-size:12px;font-weight:500;color:#374151;" id="dayLbl">Pondělí 13. 7.</div>
+    <div style="display:flex;gap:11px;color:#9ca3af;font-size:14px;">
+      <span style="cursor:pointer;" onclick="openBars()">📊</span><span>‹</span><span>›</span></div>
+  </div>
+
+  <div id="log"></div>
+
+</div>
+
+<div class="phone" id="taskWrap" style="display:none;"></div>
+<div class="phone" id="barsWrap" style="display:none;"></div>
+
+<script>
+var t=1122, yawns=0;
+var shades=['#1f2937','#374151','#6b7280','#9ca3af'];
+setInterval(function(){t++;var m=Math.floor(t/60),s=t%60;
+  document.getElementById('clock').textContent=m+'m '+(s<10?'0':'')+s+'s';},1000);
+
+function toggle(id){var e=document.getElementById(id);e.style.display=e.style.display==='flex'?'none':'flex';}
+document.getElementById('tired').onclick=function(){toggle('tiredPick');};
+document.getElementById('more').onclick=function(){toggle('morePick');};
+
+document.querySelectorAll('#tiredPick .tl').forEach(function(b){
+  b.onclick=function(){
+    document.getElementById('clock').style.color=shades[+b.dataset.t];
+    document.querySelectorAll('#tiredPick .tl').forEach(function(x){x.style.background='#fff';});
+    b.style.background='#eef2f7';
+    document.getElementById('tiredPick').style.display='none';
+    document.getElementById('tired').style.color='#374151';
+    document.getElementById('tired').style.borderColor='#cbd5e1';
+  };
+});
+document.getElementById('yawn').onclick=function(){
+  yawns++; document.getElementById('yawns').textContent=yawns+'× zívnutí';
+};
+document.getElementById('stuck').onclick=function(){
+  var b=this, on=b.style.background==='rgb(254, 243, 199)';
+  b.style.background=on?'#fff':'#fef3c7';
+  b.style.color=on?'#6b7280':'#92400e';
+  b.style.borderColor=on?'#dbe2ea':'#fcd34d';
+};
+
+var timer;
+document.getElementById('peekBtn').onclick=function(){
+  var p=document.getElementById('peek');
+  if(p.style.display==='block'){p.style.display='none';clearInterval(timer);return;}
+  p.style.display='block';
+  var n=15; document.getElementById('cd').textContent=n;
+  clearInterval(timer);
+  timer=setInterval(function(){n--;document.getElementById('cd').textContent=n;
+    if(n<=0){p.style.display='none';clearInterval(timer);}},1000);
+};
+
+// ---- veličiny ----
+var vars={
+  'baterie 965':{u:'%',t:'stav',hist:[['21:02','30'],['22:38','78']]},
+  'baterie 645':{u:'%',t:'stav',hist:[['9. 7. 18:40','22'],['9. 7. 20:10','81']]},
+  'PHM':{u:'l',t:'přírůstek',hist:[['8. 7.','38.11'],['24. 6.','32.00']]},
+  'nákup':{u:'ks',t:'přírůstek',hist:[['12. 7.','9']]}
+};
+var vSel=null, vNewType=null;
+
+document.getElementById('valBtn').onclick=function(){
+  var p=document.getElementById('valPanel');
+  p.style.display = p.style.display==='block'?'none':'block';
+  if(p.style.display==='block'){ vSel=null; vNewType=null;
+    document.getElementById('vName').value=''; document.getElementById('vVal').value='';
+    document.getElementById('vU').textContent=''; document.getElementById('vDd').innerHTML='';
+    document.getElementById('vNew').style.display='none'; document.getElementById('vHist').innerHTML='';
+  }
+};
+
+document.getElementById('vName').oninput=function(){
+  var v=this.value.toLowerCase(), dd=document.getElementById('vDd');
+  vSel=null; document.getElementById('vU').textContent=''; document.getElementById('vHist').innerHTML='';
+  if(v.length<3){dd.innerHTML=''; document.getElementById('vNew').style.display='none'; return;}
+  var m=Object.keys(vars).filter(function(k){return k.toLowerCase().indexOf(v)>=0;});
+  if(m.length){
+    document.getElementById('vNew').style.display='none';
+    dd.innerHTML='<div style="border:1px solid #dbe2ea;border-radius:9px;background:#fff;margin-bottom:6px;overflow:hidden;">'
+      + m.map(function(k){
+          return '<div data-k="'+k+'" style="padding:8px 10px;font-size:13px;color:#374151;border-bottom:1px solid #f1f5f9;cursor:pointer;">'
+            + k + '<span style="font-size:10px;color:#9ca3af;margin-left:6px;">'+vars[k].u+' · '+vars[k].t+'</span></div>';
+        }).join('') + '</div>';
+    dd.querySelectorAll('div[data-k]').forEach(function(b){
+      b.onclick=function(){
+        vSel=b.dataset.k;
+        document.getElementById('vName').value=vSel;
+        document.getElementById('vU').textContent=vars[vSel].u;
+        dd.innerHTML=''; showHist();
+      };
+    });
+  } else {
+    dd.innerHTML='';
+    document.getElementById('vNew').style.display='block';
+  }
+};
+
+document.querySelectorAll('.vt').forEach(function(b){
+  b.onclick=function(){
+    vNewType=b.dataset.t;
+    document.querySelectorAll('.vt').forEach(function(x){x.style.background='#fff';x.style.borderColor='#dbe2ea';});
+    b.style.background='#eef4ff'; b.style.borderColor='#2563eb';
+    document.getElementById('vU').textContent=document.getElementById('vUnit').value||'';
+  };
+});
+
+function showHist(){
+  if(!vSel) return;
+  var v=vars[vSel], h='<div style="font-size:11px;color:#9ca3af;margin-bottom:5px;">'+vSel+' · '+v.t+'</div>';
+  var prev=null;
+  v.hist.slice().reverse().forEach(function(r){
+    h+='<div style="display:flex;justify-content:space-between;font-size:12px;color:#6b7280;padding:2px 0;">'
+      +'<span>'+r[0]+'</span><span>'+r[1]+' '+v.u;
+    if(prev!==null && v.t==='stav'){
+      var d=(+r[1])-(+prev);
+      h+=' <span style="color:'+(d>0?'#059669':'#dc2626')+';">('+(d>0?'+':'')+d.toFixed(0)+')</span>';
+    }
+    h+='</span></div>';
+    prev=r[1];
+  });
+  if(v.t==='stav') h+='<div style="font-size:11px;color:#2563eb;margin-top:5px;">↑ 2,0 min/% · ↓ 17 min/% · z '+v.hist.length+' záznamů</div>';
+  else h+='<div style="font-size:11px;color:#2563eb;margin-top:5px;">2,0 '+v.u+'/den · od posledního 7 dní</div>';
+  document.getElementById('vHist').innerHTML=h;
+}
+
+document.getElementById('vSave').onclick=function(){
+  var n=document.getElementById('vName').value.trim(), val=document.getElementById('vVal').value;
+  if(!n||!val){ alert('vyplň veličinu i hodnotu'); return; }
+  if(!vSel){
+    var u=document.getElementById('vUnit').value.trim();
+    if(!u||!vNewType){ alert('u nové veličiny vyplň jednotku a vyber typ'); return; }
+    vars[n]={u:u,t:vNewType,hist:[]}; vSel=n;
+  }
+  vars[vSel].hist.push([new Date().toTimeString().slice(0,5), val]);
+  document.getElementById('vVal').value='';
+  document.getElementById('vNew').style.display='none';
+  document.getElementById('vU').textContent=vars[vSel].u;
+  showHist();
+};
+
+var logs={
+  akce:[
+    {d:'32m 10s',n:'Maily',t:'práce',c:'#fde68a',tm:'17:32 – 18:04',f:['bet','note']},
+    {d:'1h 48m',n:'Vývoj aplikace',t:'práce',c:'#fde68a',tm:'15:40 – 17:28',f:['stuck','flags']},
+    {d:'12m 00s',n:'Oběd',t:'jídlo',c:'#bbf7d0',tm:'13:20 – 13:32',f:[]},
+    {d:'4m 12s',n:'Připojil hodinky k nabíjení',t:'maintaining',c:'',tm:'12:40 – 12:44',f:['val']},
+    {d:'48m 30s',n:'Přesun Škola z Domov',t:'commuting',c:'#bfdbfe',tm:'09:15 – 10:03',f:['flags']}
+  ],
+  cile:[
+    {n:'Čištění zubů',sub:'22:00–22:30 · buňka 30m · 31×'},
+    {n:'Odjezd do práce',sub:'07:30–08:00 · buňka 30m · 24×'}
+  ],
+  zam:[
+    {n:'Jít ve 22:00 spát',two:['⏱ běží 9h 12m','⏳ do 22:00 · 3h 41m'],sub:'3/7 strategií'},
+    {n:'Dopsat oddíl metod',sub:'hotovo · splněno'}
+  ],
+  ukoly:[
+    {n:'Péče o zahradu',sub:'3 aktivity · ~180m',ic:'⚙',id:'zahrada'},
+    {n:'Sbalit na víkend',sub:'0/6 položek',ic:'☑',id:'balit'},
+    {n:'Zavolat účetní',sub:'za 2d 4h',id:'ucetni'}
+  ]
+};
+
+var tasks={
+  zahrada:{
+    n:'Péče o zahradu',
+    acts:[['Vytáhnout traktor ze stodoly','15m','z 18 výskytů'],
+          ['Sekání zahrady','2h 30m','z 24 výskytů'],
+          ['Odvoz trávy na kompost','15m','z 21 výskytů']],
+    items:[]
+  },
+  balit:{
+    n:'Sbalit na víkend',
+    acts:[],
+    items:[['Nabíječka Garmin',0],['Běžecké boty',0],['Léky',0],['Notebook',0],['Rybí tuk',0],['Klíče od chaty',0]]
+  },
+  ucetni:{
+    n:'Zavolat účetní',
+    acts:[], items:[], deadline:'za 2d 4h · čt 16. 7. 12:00'
+  }
+};
+
+function dots(f){
+  if(!f||!f.length) return '';
+  var m={bet:'#2563eb',stuck:'#f59e0b',note:'#94a3b8',flags:'#a78bfa',val:'#14b8a6'};
+  var h='<div style="display:flex;gap:3px;align-items:center;">';
+  f.forEach(function(x){ if(m[x]) h+='<span class="dot" style="color:'+m[x]+';">●</span>'; });
+  if(f.indexOf('flags')>=0) h+='<span style="font-size:9px;color:#cbd5e1;">2·3</span>';
+  return h+'</div>';
+}
+
+function render(k){
+  var h='';
+  logs[k].forEach(function(r,i){
+    if(r.two){
+      h+='<div class="row" style="align-items:flex-start;cursor:pointer;" onclick="alert(\'→ detail záměru:\\n· coping strategie (3/7 zaškrtnuto)\\n· vyhodnotit: splněno / přibližně / nesplněno\\n· historie úprav\')">'
+        +'<div style="flex:1;min-width:0;">'
+          +'<div class="nm">'+r.n+'</div>'
+          +'<div style="display:flex;gap:10px;margin-top:3px;">'
+            +'<span class="sub" style="color:#2563eb;">'+r.two[0]+'</span>'
+            +'<span class="sub" style="color:#b45309;">'+r.two[1]+'</span>'
+          +'</div>'
+          +'<div class="sub" style="margin-top:2px;">'+r.sub+'</div>'
+        +'</div></div>';
+      return;
+    }
+    var click = (k==='akce') ? ' onclick="alert(\'→ detail aktivity:\\n· '+r.n+' · '+r.tm+'\\n· editace časů, rychlé stavy, poznámky\\n· percentil, obvyklé rozpětí\')" style="cursor:pointer;"'
+              : (k==='ukoly' && r.id) ? ' onclick="openTask(\''+r.id+'\')" style="cursor:pointer;"' : '';
+    h+='<div class="row"'+click+'>';
+    if(r.d) h+='<div class="dur">'+r.d+'</div>';
+    else if(r.ic) h+='<div style="width:18px;text-align:center;color:#9ca3af;font-size:12px;">'+r.ic+'</div>';
+    else h+='<div style="width:16px;height:16px;border-radius:4px;border:1.5px solid #cbd5e1;"></div>';
+    h+='<div style="flex:1;min-width:0;"><div class="nm">'+r.n+'</div><div class="sub">'+(r.tm||r.sub||'')+'</div></div>';
+    h+=dots(r.f);
+    if(r.c) h+='<span class="tag" style="background:'+r.c+';font-size:10px;">'+r.t+'</span>';
+    else if(r.t) h+='<span class="sub">'+r.t+'</span>';
+    h+='</div>';
+  });
+  document.getElementById('log').innerHTML=h;
+  document.getElementById('dayLbl').style.visibility = (k==='ukoly')?'hidden':'visible';
+}
+render('akce');
+
+document.querySelectorAll('.tab').forEach(function(b){
+  b.onclick=function(){
+    document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on');});
+    b.classList.add('on');
+    render(b.dataset.t);
+  };
+});
+
+// ---- pruhy dne ----
+var barsOpen=null;
+var dayBars=[
+  {n:'sezení',p:62,m:'6h 12m',c:'#f59e0b',live:4,pos:1,sub:[['Vývoj aplikace','3h 20m'],['Maily','1h 42m'],['Oběd','12m'],['Četba','58m']]},
+  {n:'chůze',p:14,m:'1h 24m',c:'#10b981',pos:1,sub:[['Přesun Škola z Domov','48m'],['Procházka','21m'],['Nákup','15m']]},
+  {n:'ležení',p:9,m:'54m',c:'#ef4444',pos:1,sub:[['Odpočinek s mobilem','54m']]},
+  {n:'stání',p:5,m:'30m',c:'#8b5cf6',pos:1,sub:[['Vaření','30m']]},
+  {n:'běh',p:0,m:'0m',c:'#06b6d4',pos:1,sub:[]},
+  {n:'mozek',p:71,m:'7h 06m',c:'#2563eb',live:4,sub:[['Vývoj aplikace','3h 20m'],['Maily','1h 42m'],['Četba','58m'],['Přednáška','1h 06m']]},
+  {n:'denní světlo',p:11,m:'1h 06m',c:'#eab308',sub:[['Přesun Škola z Domov','48m'],['Procházka','18m']]},
+  {n:'brániční dýchání',p:3,m:'18m',c:'#14b8a6',sub:[['Procházka','18m']]},
+  {n:'rotace hrudní páteře',p:0,m:'0m',c:'#a855f7',sub:[]},
+  {n:'odstup od myšlenek',p:3,m:'18m',c:'#f472b6',sub:[['Procházka','18m']]}
+];
+function openBars(){
+  document.getElementById('barsWrap').style.display='block';
+  document.querySelector('.phone').style.display='none';
+  drawBars();
+}
+function closeBars(){
+  document.getElementById('barsWrap').style.display='none';
+  document.querySelector('.phone').style.display='block';
+}
+function togBar(i){ barsOpen=(barsOpen===i)?null:i; drawBars(); }
+function bHtml(b,i){
+  var h='<div style="margin-bottom:11px;cursor:pointer;" onclick="togBar('+i+')">'
+   +'<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;">'
+     +'<span style="color:#374151;font-weight:500;">'+b.n+'</span>'
+     +'<span style="color:#9ca3af;font-variant-numeric:tabular-nums;">'+(b.p?b.p+' % · '+b.m:'—')+'</span></div>'
+   +'<div style="height:9px;background:#eef2f7;border-radius:5px;overflow:hidden;display:flex;">';
+  if(b.p){
+    h+='<div style="height:100%;width:'+(b.p-(b.live||0))+'%;background:'+b.c+';"></div>';
+    if(b.live) h+='<div style="height:100%;width:'+b.live+'%;background:'+b.c+';opacity:.45;"></div>';
+  }
+  h+='</div>';
+  if(barsOpen===i){
+    h+='<div style="background:#f8fafc;border-radius:8px;padding:9px 11px;margin-top:6px;">';
+    if(b.sub.length) b.sub.forEach(function(s){
+      h+='<div style="display:flex;justify-content:space-between;font-size:12px;color:#6b7280;padding:2px 0;"><span>'+s[0]+'</span><span>'+s[1]+'</span></div>';
+    });
+    else h+='<div style="font-size:12px;color:#cbd5e1;">žádná aktivita</div>';
+    h+='</div>';
+  }
+  return h+'</div>';
+}
+function drawBars(){
+  var h='<div class="top"><span style="color:#6b7280;cursor:pointer;" onclick="closeBars()">‹ zpět</span>'
+    +'<span class="title" style="font-size:14px;">Pondělí 13. 7.</span><span style="width:40px;"></span></div>';
+  h+='<div class="card" style="padding:14px;"><div style="font-size:11px;color:#6b7280;letter-spacing:.04em;margin-bottom:9px;">POLOHA · jedna z</div>';
+  dayBars.forEach(function(b,i){ if(b.pos) h+=bHtml(b,i); });
+  h+='</div>';
+  h+='<div class="card" style="padding:14px;"><div style="font-size:11px;color:#6b7280;letter-spacing:.04em;margin-bottom:9px;">KVALITY · překrývají se</div>';
+  dayBars.forEach(function(b,i){ if(!b.pos) h+=bHtml(b,i); });
+  h+='</div>';
+  h+='<div class="note">% z dnešního zalogovaného bdění (10h 02m)<br>světlejší část = přírůstek běžící aktivity · klepni na pruh</div>';
+  document.getElementById('barsWrap').innerHTML=h;
+}
+
+// ---- detail úkolu ----
+var curTask=null;
+function openTask(id){
+  curTask=id;
+  document.getElementById('taskWrap').style.display='block';
+  document.querySelector('.phone').style.display='none';
+  drawTask();
+}
+function closeTask(){
+  document.getElementById('taskWrap').style.display='none';
+  document.querySelector('.phone').style.display='block';
+}
+function toggleItem(i){
+  tasks[curTask].items[i][1]=tasks[curTask].items[i][1]?0:1;
+  drawTask();
+}
+function drawTask(){
+  var t=tasks[curTask], h='';
+  h+='<div class="top"><span style="color:#6b7280;cursor:pointer;" onclick="closeTask()">‹ Úkoly</span>'
+    +'<div class="icons"><span>✎</span><span>🗑</span></div></div>';
+
+  h+='<div class="card"><div style="font-size:17px;color:#1f2937;margin-bottom:4px;">'+t.n+'</div>';
+  if(t.deadline) h+='<div class="sub" style="color:#b45309;">⏳ '+t.deadline+'</div>';
+  h+='</div>';
+
+  if(t.acts.length){
+    var tot=0; t.acts.forEach(function(a){
+      var p=a[1].match(/(\d+)h/), m=a[1].match(/(\d+)m/);
+      tot += (p?+p[1]*60:0) + (m?+m[1]:0);
+    });
+    h+='<div class="card"><div class="lbl" style="margin-bottom:9px;">VZOROVÉ AKTIVITY · '+t.acts.length+'</div>';
+    t.acts.forEach(function(a){
+      h+='<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f1f5f9;">'
+        +'<div style="flex:1;min-width:0;"><div class="nm">'+a[0]+'</div><div class="sub">'+a[2]+'</div></div>'
+        +'<span style="font-size:13px;color:#374151;font-variant-numeric:tabular-nums;">'+a[1]+'</span></div>';
+    });
+    h+='<div style="display:flex;justify-content:space-between;padding:10px 0 2px;font-size:13px;">'
+      +'<span style="color:#6b7280;">celkem (s rezervou · P85)</span>'
+      +'<span style="color:#1f2937;font-weight:500;">'+Math.floor(tot/60)+'h '+(tot%60)+'m</span></div>';
+    h+='<button class="btn" style="width:100%;margin-top:10px;" onclick="alert(\'→ obrazovka Plánování\\n\\nSoučet P85 je 3h 00m.\\nDo 18:00 to vyjde, když začneš v 15:00.\\n\\n(lze přidat další úkoly a přerovnat)\')">📋 Naplánovat</button>';
+    h+='<div class="note" style="margin-top:8px;">délka: <b>s rezervou (P85)</b> · <span style="color:#cbd5e1;">typicky (medián)</span></div>';
+    h+='</div>';
+  }
+
+  if(t.items.length){
+    var done=t.items.filter(function(x){return x[1];}).length;
+    h+='<div class="card"><div class="lbl" style="margin-bottom:9px;">POLOŽKY · '+done+'/'+t.items.length+'</div>';
+    t.items.forEach(function(it,i){
+      h+='<div style="display:flex;align-items:center;gap:10px;padding:7px 0;cursor:pointer;" onclick="toggleItem('+i+')">'
+        +'<div style="width:18px;height:18px;border-radius:5px;'
+        +(it[1]?'background:#2563eb;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;">✓'
+               :'border:1.5px solid #cbd5e1;">')
+        +'</div>'
+        +'<div style="flex:1;font-size:13px;color:'+(it[1]?'#cbd5e1':'#1f2937')+';'+(it[1]?'text-decoration:line-through;':'')+'">'+it[0]+'</div>'
+        +'<span style="color:#e2e8f0;font-size:13px;">⠿</span></div>';
+    });
+    h+='<button style="width:100%;margin-top:8px;padding:9px;border-radius:8px;border:1px dashed #cbd5e1;background:#fff;font-size:12px;color:#9ca3af;cursor:pointer;">+ položka</button>';
+    h+='</div>';
+  }
+
+  if(!t.acts.length && !t.items.length){
+    h+='<div class="card"><div class="note" style="margin:0;">prázdný úkol — přidej položky nebo vzorové aktivity</div></div>';
+  }
+
+  h+='<div class="card"><div class="lbl" style="margin-bottom:8px;">PŘIDAT</div>'
+    +'<div style="display:flex;gap:6px;">'
+    +'<button style="flex:1;padding:9px;border-radius:8px;border:1px solid #dbe2ea;background:#fff;font-size:12px;color:#374151;cursor:pointer;">☑ položku</button>'
+    +'<button style="flex:1;padding:9px;border-radius:8px;border:1px solid #dbe2ea;background:#fff;font-size:12px;color:#374151;cursor:pointer;" onclick="alert(\'vzorová aktivita se přidá z action logu nebo z vyhledávání:\\nu instance → „přidat jako vzorovou do úkolu“\\n\\n(ukládá se TYP = popis+tag, ne ta instance)\')">⚙ vzorovou aktivitu</button>'
+    +'</div></div>';
+
+  h+='<div class="note">úkol se nemusí odškrtávat — „Péče o zahradu“ se vrací</div>';
+
+  document.getElementById('taskWrap').innerHTML=h;
+}
+</script>
+</body>
+</html>

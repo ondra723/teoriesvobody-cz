@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dBCI — Plánování (mockup)</title>
+<style>
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { margin:0; background:#e8ecf3; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; padding:16px; }
+  .phone { max-width:380px; margin:0 auto; background:#f5f7fb; border-radius:22px; padding:12px; border:1px solid #dbe2ea; min-height:560px; }
+  .top { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .t { font-size:15px; font-weight:500; color:#1f2937; }
+  .x { color:#9ca3af; cursor:pointer; }
+  .card { background:#fff; border:1px solid #dbe2ea; border-radius:14px; padding:13px; margin-bottom:10px; }
+  .lbl { font-size:11px; color:#6b7280; letter-spacing:.04em; margin-bottom:9px; }
+  .seg { display:flex; background:#eef2f7; border-radius:9px; padding:3px; margin-bottom:11px; }
+  .seg button { flex:1; padding:8px; border-radius:7px; border:none; background:transparent; font-size:12px; color:#374151; cursor:pointer; }
+  .seg button.on { background:#fff; color:#1f2937; font-weight:500; box-shadow:0 1px 2px rgba(0,0,0,.06); }
+  .it { display:flex; align-items:center; gap:9px; padding:9px 0; border-bottom:1px solid #f1f5f9; }
+  .it:last-child { border:none; }
+  .gr { color:#e2e8f0; font-size:14px; cursor:grab; }
+  .nm { font-size:13px; color:#1f2937; }
+  .sb { font-size:10px; color:#9ca3af; }
+  .tm { font-size:13px; color:#374151; font-variant-numeric:tabular-nums; min-width:52px; text-align:right; }
+  .task { background:#f8fafc; border-radius:9px; padding:8px 10px; margin-bottom:7px; }
+  .tot { display:flex; justify-content:space-between; padding:11px 0 2px; border-top:1px solid #eef2f7; margin-top:6px; }
+  .tot .a { font-size:12px; color:#6b7280; }
+  .tot .b { font-size:16px; font-weight:500; color:#1f2937; font-variant-numeric:tabular-nums; }
+  input[type=time] { border:1px solid #dbe2ea; border-radius:9px; padding:9px; font-size:15px; width:100%; }
+  .res { background:#eef4ff; border:1px solid #cfe0fb; border-radius:11px; padding:12px; font-size:13px; color:#1f2937; line-height:1.5; }
+  .res b { font-variant-numeric:tabular-nums; }
+  .bad { background:#fef3c7; border-color:#fcd34d; }
+  .btn { width:100%; background:#2563eb; color:#fff; border:none; border-radius:11px; padding:12px; font-size:15px; font-weight:500; cursor:pointer; }
+  .note { font-size:11px; color:#9ca3af; text-align:center; margin-top:9px; }
+  .add { width:100%; padding:9px; border-radius:8px; border:1px dashed #cbd5e1; background:#fff; font-size:12px; color:#9ca3af; cursor:pointer; }
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <div class="top"><span class="t">Plánování</span><span class="x">✕</span></div>
+
+  <div class="card">
+    <div class="lbl">VYBRANÉ ÚKOLY · 2</div>
+    <div id="list"></div>
+    <button class="add" onclick="alert('→ zpět na Úkoly\n\nzaškrtni další úkoly se vzorovými aktivitami\n→ „naplánovat vybrané“')">+ přidat úkol</button>
+    <div class="tot"><span class="a" id="totLbl">celkem (s rezervou · P85)</span><span class="b" id="tot">3h 50m</span></div>
+  </div>
+
+  <div class="card">
+    <div class="lbl">DÉLKA</div>
+    <div class="seg">
+      <button class="on" id="mP85" onclick="setM('p85')">s rezervou (P85)</button>
+      <button id="mMed" onclick="setM('med')">typicky (medián)</button>
+    </div>
+
+    <div class="lbl" style="margin-top:4px;">SMĚR VÝPOČTU</div>
+    <div class="seg">
+      <button class="on" id="dFw" onclick="setD('fw')">začnu v… → kdy skončím</button>
+      <button id="dBw" onclick="setD('bw')">chci skončit do… → kdy začít</button>
+    </div>
+
+    <div id="inp"></div>
+    <div id="out" style="margin-top:11px;"></div>
+  </div>
+
+  <div class="note">plán je výchozí deklarace · log je stopa<br>uložený plán se druhý den postaví vedle reálného logu</div>
+
+</div>
+
+<script>
+var mode='p85', dir='fw';
+var tasks=[
+  {n:'Péče o zahradu', acts:[
+    ['Vytáhnout traktor ze stodoly',15,11,'18×'],
+    ['Sekání zahrady',150,120,'24×'],
+    ['Odvoz trávy na kompost',15,12,'21×']]},
+  {n:'Vyzvednutí babči z Hradce', acts:[
+    ['Přesun Převýšov → Hradec',35,28,'42×'],
+    ['Čekání a nakládání',12,8,'9×'],
+    ['Přesun Hradec → Převýšov',38,30,'40×']]}
+];
+
+function total(){
+  var s=0; tasks.forEach(function(t){t.acts.forEach(function(a){ s+= mode==='p85'?a[1]:a[2]; });});
+  return s;
+}
+function fmt(m){ return (m>=60?Math.floor(m/60)+'h ':'')+(m%60)+'m'; }
+function hm(d){ return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
+
+function draw(){
+  var h='';
+  tasks.forEach(function(t,ti){
+    var s=0; t.acts.forEach(function(a){ s+= mode==='p85'?a[1]:a[2]; });
+    h+='<div class="task"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">'
+      +'<span style="font-size:13px;font-weight:500;color:#374151;">'+t.n+'</span>'
+      +'<span style="font-size:12px;color:#6b7280;font-variant-numeric:tabular-nums;">'+fmt(s)+'</span></div>';
+    t.acts.forEach(function(a){
+      h+='<div class="it"><span class="gr">⠿</span>'
+        +'<div style="flex:1;min-width:0;"><div class="nm">'+a[0]+'</div><div class="sb">'+a[3]+'</div></div>'
+        +'<span class="tm">'+fmt(mode==='p85'?a[1]:a[2])+'</span></div>';
+    });
+    h+='</div>';
+  });
+  document.getElementById('list').innerHTML=h;
+  document.getElementById('tot').textContent=fmt(total());
+  document.getElementById('totLbl').textContent= mode==='p85'?'celkem (s rezervou · P85)':'celkem (typicky · medián)';
+  drawInp();
+}
+
+function setM(m){ mode=m;
+  document.getElementById('mP85').classList.toggle('on',m==='p85');
+  document.getElementById('mMed').classList.toggle('on',m==='med');
+  draw();
+}
+function setD(d){ dir=d;
+  document.getElementById('dFw').classList.toggle('on',d==='fw');
+  document.getElementById('dBw').classList.toggle('on',d==='bw');
+  drawInp();
+}
+function drawInp(){
+  document.getElementById('inp').innerHTML = dir==='fw'
+    ? '<div class="lbl" style="margin-bottom:6px;">ZAČNU V</div><input type="time" id="tv" value="13:00" onchange="calc()">'
+    : '<div class="lbl" style="margin-bottom:6px;">CHCI SKONČIT DO</div><input type="time" id="tv" value="18:00" onchange="calc()">';
+  calc();
+}
+function calc(){
+  var v=document.getElementById('tv').value, tot=total();
+  var p=v.split(':'), d=new Date(2026,6,13,+p[0],+p[1]);
+  var o=document.getElementById('out');
+  if(dir==='fw'){
+    var e=new Date(d.getTime()+tot*60000);
+    o.innerHTML='<div class="res">Součet '+(mode==='p85'?'P85':'mediánů')+' je <b>'+fmt(tot)+'</b>. '
+      +'Když začneš v <b>'+hm(d)+'</b>, skončíš v <b>'+hm(e)+'</b>.</div>';
+  } else {
+    var s=new Date(d.getTime()-tot*60000);
+    var late = s.getHours()<9;
+    o.innerHTML='<div class="res'+(late?' bad':'')+'">Součet '+(mode==='p85'?'P85':'mediánů')+' je <b>'+fmt(tot)+'</b>. '
+      +'Do <b>'+hm(d)+'</b> to vyjde, když začneš v <b>'+hm(s)+'</b>.'
+      +(late?'<br><span style="color:#92400e;font-size:12px;">To je před 9:00 — dnes už jsi minul.</span>':'')+'</div>';
+  }
+}
+draw();
+</script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dBCI — vyhledávání (mockup)</title>
+<style>
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { margin:0; background:#e8ecf3; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; padding:16px; }
+  .phone { max-width:380px; margin:0 auto; background:#f5f7fb; border-radius:22px; padding:12px; border:1px solid #dbe2ea; min-height:560px; }
+  .top { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .t { font-size:15px; font-weight:500; color:#1f2937; }
+  .x { color:#9ca3af; cursor:pointer; }
+  .card { background:#fff; border:1px solid #dbe2ea; border-radius:14px; padding:13px; margin-bottom:10px; }
+  .lbl { font-size:11px; color:#6b7280; letter-spacing:.04em; margin-bottom:8px; }
+  input, select { width:100%; border:1px solid #dbe2ea; border-radius:9px; padding:10px; font-size:14px; margin-bottom:7px; background:#fff; }
+  .two { display:flex; gap:7px; }
+  .two input { flex:1; }
+  .qk { display:flex; gap:5px; align-items:center; margin:8px 0 2px; }
+  .qk button { padding:7px 0; border-radius:8px; border:1px solid #dbe2ea; background:#fff; font-size:12px; color:#374151; cursor:pointer; }
+  .qk .m { flex:1; }
+  .qk .m.on { background:#2563eb; color:#fff; border-color:#2563eb; }
+  .qk .ar { flex:0 0 32px; color:#9ca3af; }
+  .btn { width:100%; background:#2563eb; color:#fff; border:none; border-radius:11px; padding:12px; font-size:15px; font-weight:500; cursor:pointer; }
+  .tile { display:flex; align-items:center; justify-content:space-between; background:#fff; border:1px solid #dbe2ea; border-radius:12px; padding:11px 13px; margin-bottom:6px; cursor:pointer; }
+  .tile .n { font-size:13px; color:#1f2937; }
+  .tile .q { font-size:10px; color:#cbd5e1; font-family:ui-monospace,monospace; }
+  .tile .s { font-size:14px; font-weight:500; color:#2563eb; font-variant-numeric:tabular-nums; }
+  .row { display:flex; align-items:center; gap:9px; background:#fff; border:1px solid #dbe2ea; border-radius:11px; padding:9px 11px; margin-bottom:5px; }
+  .dur { min-width:56px; font-size:12px; font-weight:500; color:#374151; font-variant-numeric:tabular-nums; }
+  .nm { font-size:13px; color:#1f2937; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .sub { font-size:11px; color:#9ca3af; }
+  .tag { font-size:10px; padding:2px 7px; border-radius:6px; }
+  .go { flex:0 0 26px; height:26px; border-radius:7px; border:1px solid #dbe2ea; background:#f8fafc; color:#6b7280; font-size:11px; cursor:pointer; }
+  .dot { font-size:7px; }
+  .sum { display:flex; justify-content:space-between; align-items:baseline; padding:2px 4px 9px; }
+  .sum .a { font-size:12px; color:#6b7280; }
+  .sum .b { font-size:16px; font-weight:500; color:#1f2937; font-variant-numeric:tabular-nums; }
+  .note { font-size:11px; color:#9ca3af; text-align:center; margin-top:9px; }
+  .chip { display:inline-flex; align-items:center; gap:4px; font-size:11px; padding:4px 9px; border-radius:14px; border:1px solid #dbe2ea; background:#fff; color:#6b7280; cursor:pointer; margin:0 4px 4px 0; }
+  .chip.on { background:#eef4ff; border-color:#2563eb; color:#2563eb; }
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <div class="top"><span class="t">Vyhledávání</span><span class="x">✕</span></div>
+
+  <div class="lbl">ULOŽENÁ HLEDÁNÍ</div>
+  <div id="tiles"></div>
+
+  <div class="card" style="margin-top:12px;">
+    <div class="lbl">NOVÝ DOTAZ</div>
+    <input id="q1" placeholder="Popis (např. *domény* nebo Registroval*)">
+    <input id="q2" placeholder="Tag (např. work*)">
+
+    <div class="two">
+      <input type="datetime-local" id="f1" value="2026-07-13T00:00">
+      <input type="datetime-local" id="f2" value="2026-07-13T23:59">
+    </div>
+
+    <div class="qk">
+      <button class="ar" onclick="shift(-1)">‹</button>
+      <button class="m on" data-m="d" onclick="quick('d',this)">dnes</button>
+      <button class="m" data-m="w" onclick="quick('w',this)">týden</button>
+      <button class="m" data-m="mo" onclick="quick('mo',this)">měsíc</button>
+      <button class="ar" onclick="shift(1)">›</button>
+    </div>
+    <div class="note" id="rng" style="text-align:left;margin:6px 0 10px;">po 13. 7. 2026</div>
+
+    <div class="lbl" style="margin-top:4px;">JEN AKTIVITY, KTERÉ MAJÍ</div>
+    <div style="margin-bottom:8px;">
+      <span class="chip" onclick="this.classList.toggle('on')">🔵 sázku</span>
+      <span class="chip" onclick="this.classList.toggle('on')">🟠 zásek</span>
+      <span class="chip" onclick="this.classList.toggle('on')">⚪ poznámku</span>
+      <span class="chip" onclick="this.classList.toggle('on')">🟣 flag</span>
+      <span class="chip" onclick="this.classList.toggle('on')">🟢 hodnotu</span>
+    </div>
+
+    <div class="two" style="margin-bottom:8px;">
+      <select style="flex:1;"><option>veličina: —</option><option>baterie 965 / %</option><option>baterie 645 / %</option><option>PHM / l</option></select>
+    </div>
+    <div class="two">
+      <input placeholder="hodnota od" style="flex:1;"><input placeholder="do" style="flex:1;">
+    </div>
+
+    <button class="btn" onclick="search()">🔍 Hledat</button>
+  </div>
+
+  <div id="res"></div>
+
+</div>
+
+<script>
+var saved=[
+  {n:'Práce dnes', q:'tag: work*  ·  dnes', s:'4h 20m'},
+  {n:'Zásek za měsíc', q:'flag: zásek  ·  30 dní', s:'7×'},
+  {n:'Nákupy PHM', q:'veličina: PHM  ·  vše', s:'2,0 l/den'},
+  {n:'Nabíjení 965', q:'veličina: baterie 965 ≤80 %', s:'↑ 2,0 min/%'}
+];
+document.getElementById('tiles').innerHTML = saved.map(function(t){
+  return '<div class="tile" onclick="search()"><div><div class="n">'+t.n+'</div><div class="q">'+t.q+'</div></div><div class="s">'+t.s+'</div></div>';
+}).join('') + '<div class="tile" style="border-style:dashed;color:#9ca3af;justify-content:center;"><span style="font-size:12px;">+ uložit aktuální dotaz</span></div>';
+
+var mode='d', off=0;
+function quick(m,b){ mode=m; off=0;
+  document.querySelectorAll('.qk .m').forEach(function(x){x.classList.remove('on');});
+  b.classList.add('on'); upd();
+}
+function shift(d){ off+=d; upd(); }
+function upd(){
+  var lbl={d:'den',w:'týden',mo:'měsíc'}[mode];
+  var txt = off===0 ? ('aktuální '+lbl) : (Math.abs(off)+'. '+lbl+(off<0?' zpět':' vpřed'));
+  document.getElementById('rng').textContent = txt + ' · čas resetován na 0:00';
+}
+
+var data=[
+  {d:'46m 28s',n:'work - 8. hit',t:'work - WD - projekt - appka',c:'#fde68a',tm:'21:21 – 22:07',f:['note']},
+  {d:'27m 22s',n:'work - 7. hit',t:'work - VVČ - článek AI',c:'#fde68a',tm:'20:51 – 21:19',f:['note','flags']},
+  {d:'1h 05m',n:'work - 6. hit',t:'work - VVČ - článek AI',c:'#fde68a',tm:'19:30 – 20:36',f:['bet','stuck']},
+  {d:'52m 10s',n:'work - 5. hit',t:'work - výuka - zkoušení',c:'#fde68a',tm:'14:20 – 15:12',f:['flags'],y:'2025'},
+  {d:'1h 48m',n:'work - 4. hit',t:'work - projekt - appka',c:'#fde68a',tm:'10:15 – 12:03',f:[]}
+];
+function dots(f){
+  var m={bet:'#2563eb',stuck:'#f59e0b',note:'#94a3b8',flags:'#a78bfa',val:'#14b8a6'};
+  if(!f.length) return '';
+  return '<div style="display:flex;gap:2px;">'+f.map(function(x){return '<span class="dot" style="color:'+m[x]+';">●</span>';}).join('')+'</div>';
+}
+function search(){
+  var h='<div class="sum"><span class="a">5 aktivit · tag work*</span><span class="b">4h 20m</span></div>';
+  data.forEach(function(r){
+    h+='<div class="row">'
+      +'<div class="dur">'+r.d+'</div>'
+      +'<div style="flex:1;min-width:0;"><div class="nm">'+r.n+'</div>'
+        +'<div class="sub">'+r.tm+(r.y?' · '+r.y:'')+'</div></div>'
+      + dots(r.f)
+      +'<span class="tag" style="background:'+r.c+';color:#374151;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+r.t+'</span>'
+      +'<button class="go" title="přejít do dne" onclick="alert(\'→ action log toho dne\')">›|</button>'
+    +'</div>';
+  });
+  h+='<div class="note">rok se ukáže jen mimo aktuální (viz „work - 5. hit · 2025")<br>tlačítko ›| = přejít do dne · tapnutí jinam = detail aktivity</div>';
+  document.getElementById('res').innerHTML=h;
+  document.getElementById('res').scrollIntoView({behavior:'smooth'});
+}
+upd();
+</script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dBCI — přechod stop → M1/M2 → start (mockup)</title>
+<style>
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { margin:0; background:#e8ecf3; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; padding:16px; }
+  .phone { max-width:380px; margin:0 auto; background:#f5f7fb; border-radius:22px; padding:12px; border:1px solid #dbe2ea; min-height:560px; }
+  .hint { max-width:380px; margin:0 auto 10px; font-size:12px; color:#64748b; text-align:center; }
+  .card { background:#fff; border:1px solid #dbe2ea; border-radius:16px; padding:16px; margin-bottom:10px; }
+  .lbl { font-size:11px; color:#6b7280; letter-spacing:.04em; }
+  .clock { font-size:34px; font-weight:500; color:#6b7280; font-variant-numeric:tabular-nums; }
+  .tag { font-size:12px; padding:3px 10px; border-radius:9px; color:#374151; background:#fde68a; }
+  .btn { background:#2563eb; color:#fff; border:none; border-radius:12px; padding:13px; font-size:16px; font-weight:500; cursor:pointer; width:100%; }
+  .btn2 { background:#eef2f7; color:#6b7280; border:none; border-radius:12px; cursor:pointer; }
+  input { width:100%; border:1px solid #dbe2ea; border-radius:10px; padding:11px; font-size:15px; margin-bottom:8px; }
+  .mini { padding:12px 14px; background:#eef2f7; color:#374151; border:none; border-radius:10px; font-size:13px; cursor:pointer; }
+  .pick { flex:1; text-align:center; background:#f5f7fb; border:1px solid #dbe2ea; border-radius:12px; padding:16px 8px; font-size:15px; color:#1f2937; cursor:pointer; }
+  .pick.on { background:#2563eb; color:#fff; border-color:#2563eb; }
+  .pick.on .s { color:#cfe0fb; }
+  .s { font-size:11px; color:#9ca3af; margin-top:2px; }
+  .sim { flex:1; padding:11px 0; border-radius:10px; border:1px solid #dbe2ea; background:#fff; font-size:12px; color:#374151; cursor:pointer; }
+  .sim.on { background:#2563eb; color:#fff; border-color:#2563eb; }
+  .skip { width:100%; background:none; border:none; color:#9ca3af; font-size:13px; padding:8px; cursor:pointer; }
+  .q { font-size:14px; color:#1f2937; margin-bottom:9px; }
+  .step { font-size:11px; color:#9ca3af; margin-bottom:9px; }
+  .saved { background:#ecfdf5; border:1px solid #a7f3d0; border-radius:12px; padding:11px 13px; margin-bottom:10px; font-size:13px; color:#065f46; }
+  .row { display:flex; gap:8px; }
+  .note { font-size:11px; color:#9ca3af; text-align:center; margin-top:8px; }
+</style>
+</head>
+<body>
+<div class="hint">klikej: Stop → odpověz nebo přeskoč → Start</div>
+<div class="phone" id="app"></div>
+
+<script>
+var state=0, t=6521;
+
+function fmt(x){var h=Math.floor(x/3600),m=Math.floor(x%3600/60),s=x%60;
+  return (h?h+'h ':'')+m+'m '+(s<10?'0':'')+s+'s';}
+
+function view(){
+  var a=document.getElementById('app');
+
+  if(state===0){
+    a.innerHTML='<div class="card">'
+      +'<div style="display:flex;justify-content:space-between;"><div class="lbl">PRÁVĚ BĚŽÍ</div><div class="lbl">2. dnes</div></div>'
+      +'<div style="display:flex;align-items:baseline;justify-content:space-between;margin:2px 0 8px;">'
+        +'<div class="clock" id="ck">'+fmt(t)+'</div><span class="tag">rozvoj</span></div>'
+      +'<div style="font-size:15px;color:#374151;margin-bottom:14px;">Četba</div>'
+      +'<button class="btn" onclick="go(1)">⏹ Stop</button>'
+    +'</div>'
+    +'<div class="note">běžící čas je ztlumený — před chvílí jsi zadal „standardní únava"</div>';
+    return;
+  }
+
+  if(state===1){
+    a.innerHTML='<div class="saved">✓ Četba uložena · 1h 48m 41s · 21:30–23:18</div>'
+    +'<div class="card">'
+      +'<input value="" placeholder="Popis aktivity" id="d">'
+      +'<input value="" placeholder="Tag / kategorie">'
+      +'<div class="row" style="align-items:center;">'
+        +'<button class="btn" style="flex:1;" onclick="go(2)">▶ Start</button>'
+        +'<button class="mini">Now</button><button class="mini">Last</button>'
+      +'</div>'
+    +'</div>'
+    +'<div class="note">M1/M2 se ptá až PO startu (volitelné v Nastavení)<br>napiš cokoli a dej Start</div>';
+    return;
+  }
+
+  if(state===2){
+    a.innerHTML='<div class="card" style="border-color:#2563eb;">'
+      +'<div class="step">RYCHLÁ OTÁZKA · lze přeskočit</div>'
+      +'<div class="q">Kterou je teď snazší začít?</div>'
+      +'<div class="row" style="margin-bottom:16px;">'
+        +'<button class="pick" id="p1">Maily<div class="s">work - admin</div></button>'
+        +'<button class="pick" id="p2">Procházka<div class="s">pohyb</div></button>'
+      +'</div>'
+      +'<div class="q">V jakém vztahu jsou tyhle dvě?</div>'
+      +'<div class="row" id="simrow">'
+        +'<button class="sim">vůbec</button><button class="sim">trochu</button>'
+        +'<button class="sim">dost</button><button class="sim">velmi</button>'
+      +'</div>'
+      +'<button class="skip" onclick="go(3)">Přeskočit</button>'
+    +'</div>'
+    +'<div class="note">nová aktivita už mezitím běží — pod tímhle panelem<br>ani jedna z dvojice není ta právě stopnutá (recency)</div>';
+
+    document.querySelectorAll('#p1,#p2').forEach(function(b){
+      b.onclick=function(){
+        document.querySelectorAll('#p1,#p2').forEach(function(x){x.classList.remove('on');});
+        b.classList.add('on'); check();
+      };
+    });
+    document.querySelectorAll('#simrow .sim').forEach(function(b){
+      b.onclick=function(){
+        document.querySelectorAll('#simrow .sim').forEach(function(x){x.classList.remove('on');});
+        b.classList.add('on'); check();
+      };
+    });
+    return;
+  }
+
+  if(state===3){
+    t=17;
+    a.innerHTML='<div class="card">'
+      +'<div style="display:flex;justify-content:space-between;"><div class="lbl">PRÁVĚ BĚŽÍ</div><div class="lbl">1. dnes</div></div>'
+      +'<div style="display:flex;align-items:baseline;justify-content:space-between;margin:2px 0 8px;">'
+        +'<div class="clock" style="color:#1f2937;" id="ck">'+fmt(t)+'</div><span class="tag" style="background:#e9d5ff;">rutina</span></div>'
+      +'<div style="font-size:15px;color:#374151;margin-bottom:14px;">Příprava na spánek</div>'
+      +'<button class="btn" onclick="reset()">⏹ Stop</button>'
+    +'</div>'
+    +'<div class="note">hotovo — tři tapy: Stop → Start → odpověď<br><a href="#" onclick="reset();return false;" style="color:#2563eb;">začít znovu</a></div>';
+  }
+}
+
+function check(){
+  var a=document.querySelector('#p1.on,#p2.on'), b=document.querySelector('#simrow .sim.on');
+  if(a&&b) setTimeout(function(){go(3);},450);
+}
+function go(s){state=s;view();}
+function reset(){state=0;t=6521;view();}
+
+setInterval(function(){
+  if(state===0||state===3){t++;var c=document.getElementById('ck');if(c)c.textContent=fmt(t);}
+},1000);
+
+view();
+</script>
+</body>
+</html>

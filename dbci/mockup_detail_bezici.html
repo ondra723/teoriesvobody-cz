@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dBCI — detail běžící aktivity (mockup)</title>
+<style>
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { margin:0; background:#e8ecf3; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; padding:16px; }
+  .nav { max-width:380px; margin:0 auto 10px; display:flex; gap:4px; flex-wrap:wrap; font-size:11px; }
+  .nav a { padding:5px 9px; border-radius:7px; background:#fff; color:#475569; text-decoration:none; border:1px solid #cbd5e1; }
+  .nav a.on { background:#334155; color:#fff; border-color:#334155; }
+  .phone { max-width:380px; margin:0 auto; background:#f5f7fb; border-radius:22px; padding:12px; border:1px solid #dbe2ea; }
+  .top { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  .ico { display:flex; gap:13px; color:#6b7280; font-size:16px; }
+  .card { background:#fff; border:1px solid #dbe2ea; border-radius:14px; padding:13px; margin-bottom:9px; }
+  .lbl { font-size:11px; color:#6b7280; letter-spacing:.04em; margin-bottom:9px; }
+  .big { font-size:32px; font-weight:500; font-variant-numeric:tabular-nums; transition:color .4s; }
+  .tag { font-size:12px; padding:3px 10px; border-radius:9px; color:#374151; background:#fde68a; }
+  .live { font-size:10px; color:#059669; background:#ecfdf5; padding:2px 7px; border-radius:6px; }
+  .meta { display:flex; justify-content:space-between; font-size:12px; padding:5px 0; border-bottom:1px solid #f8fafc; }
+  .meta span:first-child { color:#9ca3af; }
+  .meta span:last-child { color:#374151; font-variant-numeric:tabular-nums; }
+  .qr { display:flex; gap:5px; }
+  .q { flex:1; padding:9px 3px; border-radius:9px; border:1px solid #dbe2ea; background:#fff; font-size:11px; color:#6b7280; cursor:pointer; }
+  .q.w { flex:0 0 32px; }
+  .q.on { background:#fef3c7; border-color:#fcd34d; color:#92400e; }
+  .st { display:flex; gap:4px; margin-top:7px; }
+  .st button { flex:1; padding:8px 0; border-radius:8px; border:1px solid #dbe2ea; background:#fff; font-size:11px; color:#374151; cursor:pointer; }
+  .st button.on { background:#eef4ff; border-color:#2563eb; color:#2563eb; }
+  .pos { display:flex; gap:4px; flex-wrap:wrap; }
+  .pos button { flex:1; min-width:60px; padding:8px 4px; border-radius:8px; border:1px solid #dbe2ea; background:#fff; font-size:11px; color:#374151; cursor:pointer; }
+  .pos button.on { border-color:#2563eb; background:#eef4ff; color:#2563eb; font-weight:500; }
+  .qual { display:flex; gap:4px; flex-wrap:wrap; }
+  .qual button { padding:7px 10px; border-radius:14px; border:1px solid #dbe2ea; background:#fff; font-size:11px; color:#6b7280; cursor:pointer; }
+  .qual button.on { background:#eef4ff; border-color:#2563eb; color:#2563eb; }
+  .aq { margin-bottom:11px; }
+  .aqt { font-size:12px; color:#1f2937; }
+  .aqs { font-size:10px; color:#cbd5e1; margin-bottom:5px; }
+  .sc { display:flex; gap:3px; }
+  .sc button { flex:1; padding:7px 0; border-radius:6px; border:1px solid #dbe2ea; background:#fff; font-size:10px; color:#9ca3af; cursor:pointer; }
+  .sc button.on { background:#2563eb; border-color:#2563eb; color:#fff; }
+  .pol { display:flex; justify-content:space-between; font-size:9px; color:#cbd5e1; margin-top:2px; }
+  textarea { width:100%; border:1px solid #dbe2ea; border-radius:9px; padding:9px; font-size:12px; font-family:inherit; resize:vertical; min-height:60px; }
+  .add { width:100%; padding:8px; border-radius:8px; border:1px dashed #cbd5e1; background:#fff; font-size:12px; color:#9ca3af; cursor:pointer; margin-top:6px; }
+  input { width:100%; border:1px solid #dbe2ea; border-radius:8px; padding:8px; font-size:13px; }
+  .btn { width:100%; background:#2563eb; color:#fff; border:none; border-radius:11px; padding:12px; font-size:15px; font-weight:500; cursor:pointer; }
+  .note { font-size:10px; color:#cbd5e1; text-align:center; margin-top:8px; }
+  .warn { font-size:10px; color:#92400e; background:#fef3c7; border-radius:7px; padding:6px 9px; margin-top:8px; }
+  .dots { display:flex; gap:10px; font-size:10px; color:#6b7280; flex-wrap:wrap; }
+  .d { font-size:7px; }
+</style>
+</head>
+<body>
+<div class="nav">
+  <a href="mockup_hlavni.html">hlavní</a>
+  <a href="mockup_vstup.html">vstup</a>
+  <a class="on" href="#">detail běžící</a>
+  <a href="mockup_pruhy_detail.html">pruhy/detail uložené</a>
+  <a href="mockup_nastaveni.html">nastavení</a>
+</div>
+
+<div class="phone">
+  <div class="top">
+    <span style="color:#6b7280;cursor:pointer;">‹ zpět</span>
+    <div class="ico"><span>✎</span><span style="opacity:.3;">🗑</span></div>
+  </div>
+
+  <!-- hlavička -->
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:7px;margin-bottom:3px;">
+      <span class="live">● běží</span><span style="font-size:10px;color:#9ca3af;">6. dnes</span>
+    </div>
+    <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px;">
+      <div class="big" id="clk" style="color:#1f2937;">18m 42s</div>
+      <span class="tag">work - projekt - appka</span>
+    </div>
+    <div style="font-size:15px;color:#374151;margin-bottom:9px;">Vývoj aplikace</div>
+    <div class="meta"><span>začátek</span><span>15:40 · po 13. 7.</span></div>
+    <div class="meta"><span>obvyklé rozpětí (Q1–Q3)</span><span>45–125m</span></div>
+    <div class="meta" style="border:none;"><span>z kolika</span><span>24 výskytů</span></div>
+    <div class="warn">běžící aktivitu nelze smazat · poznámky lze přidávat</div>
+  </div>
+
+  <!-- rychlé -->
+  <div class="card">
+    <div class="lbl">RYCHLÉ</div>
+    <div class="qr">
+      <button class="q" id="bT" onclick="tg('T')">🔋 únava</button>
+      <button class="q" id="bY" onclick="yawn()">💨 zívnutí <span id="yc"></span></button>
+      <button class="q" id="bS" onclick="stuck()">⚠️ zásek</button>
+      <button class="q w" onclick="tg('M')">⋯</button>
+    </div>
+    <div class="st" id="pT" style="display:none;">
+      <button onclick="setT(0,this)">zanedb.</button><button onclick="setT(1,this)">malá</button>
+      <button onclick="setT(2,this)">standard</button><button onclick="setT(3,this)">vysoká</button>
+    </div>
+    <div id="pM" style="display:none;">
+      <div class="st"><button onclick="tg('H')">hlad</button><button onclick="tg('B')">bolest hlavy</button>
+        <button onclick="tg('C')">teplo/zima</button><button onclick="tg('E')">rozrušení</button></div>
+      <div class="st" style="margin-top:4px;"><button onclick="tg('V')">📊 hodnota</button>
+        <button onclick="tg('P')">👁 private/public</button></div>
+    </div>
+    <div class="st" id="pH" style="display:none;">
+      <button>žádný</button><button>mírný</button><button>silný</button><button>velmi silný</button>
+    </div>
+    <div class="st" id="pB" style="display:none;">
+      <button>žádná</button><button>mírná</button><button>silná</button><button>velmi silná</button>
+    </div>
+    <div class="st" id="pC" style="display:none;">
+      <button>zima</button><button>chladno</button><button>ok</button><button>teplo</button><button>horko</button>
+    </div>
+    <div class="st" id="pE" style="display:none;">
+      <button>klid</button><button>mírné</button><button>silné</button><button>velmi silné</button>
+    </div>
+    <div id="pV" style="display:none;margin-top:7px;">
+      <input placeholder="veličina (napiš 3 znaky…)" style="margin-bottom:5px;">
+      <div style="display:flex;gap:5px;"><input type="number" placeholder="hodnota" style="flex:1;">
+        <button style="padding:8px 13px;border-radius:8px;border:none;background:#2563eb;color:#fff;font-size:12px;cursor:pointer;">Uložit</button></div>
+    </div>
+    <div class="st" id="pP" style="display:none;">
+      <button class="on">private (jen čas)</button><button>public (i popis)</button>
+    </div>
+  </div>
+
+  <!-- kategorie času -->
+  <div class="card">
+    <div class="lbl">POLOHA · jedna z</div>
+    <div class="pos" id="pos">
+      <button class="on">sezení</button><button>stání</button><button>chůze</button><button>běh</button><button>ležení</button>
+    </div>
+    <div class="lbl" style="margin:12px 0 8px;">KVALITY · nezávisle</div>
+    <div class="qual" id="qual">
+      <button class="on">mozek</button><button>rotace hrudní páteře</button><button>brániční dýchání</button>
+      <button>odstup od myšlenek</button><button>denní světlo</button>
+    </div>
+  </div>
+
+  <!-- aktivitní otázky -->
+  <div class="card">
+    <div class="lbl">AKTIVITNÍ OTÁZKY · 5 · dobrovolné</div>
+    <div id="aqs"></div>
+  </div>
+
+  <!-- poznámky -->
+  <div class="card">
+    <div class="lbl">POZNÁMKY · 0</div>
+    <textarea placeholder="např.&#10;1-5 příprava&#10;5-75 zkoušel 3x studenty"></textarea>
+    <button class="add">+ další poznámka</button>
+  </div>
+
+  <!-- indikátory -->
+  <div class="card">
+    <div class="lbl">INDIKÁTORY</div>
+    <div class="dots" id="dots"></div>
+  </div>
+
+  <button class="btn">⏹ Stop</button>
+  <div class="note">všechno kromě polohy je dobrovolné<br>nic z toho neblokuje Stop</div>
+</div>
+
+<script>
+var t=1122, yawns=0, tired=null, isStuck=false;
+var shades=['#1f2937','#374151','#6b7280','#9ca3af'];
+setInterval(function(){t++;var m=Math.floor(t/60),s=t%60;
+  document.getElementById('clk').textContent=m+'m '+(s<10?'0':'')+s+'s';},1000);
+
+function tg(k){ var e=document.getElementById('p'+k); e.style.display = e.style.display==='none'?'flex':'none';
+  if(k==='M'||k==='V') e.style.display = e.style.display==='flex'?'block':'none'; }
+
+function setT(i,b){
+  tired=i;
+  document.getElementById('clk').style.color=shades[i];
+  document.querySelectorAll('#pT button').forEach(function(x){x.classList.remove('on');});
+  b.classList.add('on');
+  document.getElementById('bT').classList.remove('on');
+  document.getElementById('bT').style.color='#374151';
+  dots();
+}
+function yawn(){ yawns++; document.getElementById('yc').textContent=yawns?'· '+yawns:''; dots(); }
+function stuck(){ isStuck=!isStuck; document.getElementById('bS').classList.toggle('on',isStuck); dots(); }
+
+var qs=[
+  ['Brániční dýchání?','vůbec → silně'],
+  ['Jak jsem se cítil?','otrávený → maximálně spokojený'],
+  ['Zaostření na blízko?','ostře → nemohu zaostřit'],
+  ['Rotace hrudní páteře?','volně → strnule'],
+  ['[vlastní otázka]','pól 1 → pól 7']
+];
+var ans={};
+document.getElementById('aqs').innerHTML = qs.map(function(q,i){
+  return '<div class="aq"><div class="aqt">'+q[0]+'</div><div class="aqs">'+q[1]+'</div>'
+    +'<div class="sc" id="sc'+i+'">'
+    + [1,2,3,4,5,6,7].map(function(n){return '<button onclick="pick('+i+','+n+',this)">'+n+'</button>';}).join('')
+    +'</div><div class="pol"><span>'+q[1].split(' → ')[0]+'</span><span>'+q[1].split(' → ')[1]+'</span></div></div>';
+}).join('');
+function pick(i,n,b){
+  if(ans[i]===n){ delete ans[i]; b.classList.remove('on'); dots(); return; }
+  ans[i]=n;
+  document.querySelectorAll('#sc'+i+' button').forEach(function(x){x.classList.remove('on');});
+  b.classList.add('on'); dots();
+}
+
+document.querySelectorAll('#pos button').forEach(function(b){
+  b.onclick=function(){ document.querySelectorAll('#pos button').forEach(function(x){x.classList.remove('on');}); b.classList.add('on'); };
+});
+document.querySelectorAll('#qual button').forEach(function(b){
+  b.onclick=function(){ b.classList.toggle('on'); dots(); };
+});
+
+function dots(){
+  var k=Object.keys(ans).length;
+  var q=document.querySelectorAll('#qual button.on').length;
+  var h='';
+  h+='<span style="color:'+(isStuck?'#f59e0b':'#e5e7eb')+';"><span class="d">●</span> zásek</span>';
+  h+='<span style="color:#e5e7eb;"><span class="d">●</span> poznámka</span>';
+  h+='<span style="color:'+((k||q)?'#a78bfa':'#e5e7eb')+';"><span class="d">●</span> flagy '+(1+q)+'·'+k+'</span>';
+  h+='<span style="color:#e5e7eb;"><span class="d">●</span> sázka</span>';
+  h+='<span style="color:#e5e7eb;"><span class="d">●</span> hodnota</span>';
+  h+='<span style="color:#64748b;"><span class="d">●</span> private</span>';
+  document.getElementById('dots').innerHTML=h;
+}
+dots();
+</script>
+</body>
+</html>
